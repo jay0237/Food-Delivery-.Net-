@@ -1,14 +1,17 @@
-using FoodOrderingSystem.Models.Entities;
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
-namespace FoodOrderingSystem.Data
+namespace FoodOrderingSystem.Models.Entities
 {
-    public class AppDbContext : DbContext
+    public class Category
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
+        public int Id { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+
+        public string? ImageUrl { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }
