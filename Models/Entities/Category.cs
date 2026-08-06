@@ -1,17 +1,17 @@
-using System.ComponentModel.DataAnnotations;
+namespace FoodOrderingSystem.Models.Entities;
 
-namespace FoodOrderingSystem.Models.Entities
+public class Category
 {
-    public class Category
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 
-        public string? ImageUrl { get; set; }
+    public string? Description { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    }
+    public string? ImageUrl { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Navigation Property
+    public ICollection<Food> Foods { get; set; } = new List<Food>();
 }
