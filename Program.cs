@@ -1,4 +1,7 @@
 using FoodOrderingSystem.Data;
+using FoodOrderingSystem.Models.Entities;
+using FoodOrderingSystem.Repositories.Implementations;
+using FoodOrderingSystem.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +10,41 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
+
+    if (!context.Categories.Any())
+    {
+        context.Categories.AddRange(
+            new Category
+            {
+                Name = "Burgers",
+                Description = "Classic and premium burgers prepared fresh to order.",
+                ImageUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80"
+            },
+            new Category
+            {
+                Name = "Pizza",
+                Description = "Hand-tossed pizza with fresh toppings and rich sauces.",
+                ImageUrl = "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80"
+            },
+            new Category
+            {
+                Name = "Drinks",
+                Description = "Cold beverages, shakes, and refreshers for every meal.",
+                ImageUrl = "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=80"
+            }
+        );
+
+        context.SaveChanges();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
