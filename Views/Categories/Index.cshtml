@@ -1,0 +1,30 @@
+@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<section class="page-shell">
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">Catalog</p>
+            <h1>Categories</h1>
+            <p>These cards come from the repository and seeded SQLite data.</p>
+        </div>
+        <a class="btn btn-outline-dark" asp-controller="Home" asp-action="Index">Back to dashboard</a>
+    </div>
+
+    <div class="category-grid">
+        @foreach (var category in Model)
+        {
+            <article class="category-card">
+                <div class="category-image" style="background-image: url('@category.ImageUrl');"></div>
+                <div class="category-body">
+                    <h2>@category.Name</h2>
+                    <p>@category.Description</p>
+                    <small>Created @category.CreatedAt.ToString("dd MMM yyyy")</small>
+                </div>
+            </article>
+        }
+    </div>
+</section>
