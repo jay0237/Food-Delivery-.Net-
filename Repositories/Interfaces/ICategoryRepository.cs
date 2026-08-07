@@ -1,49 +1,16 @@
-using FoodOrderingSystem.Data;
 using FoodOrderingSystem.Models.Entities;
-using FoodOrderingSystem.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
-namespace FoodOrderingSystem.Repositories.Implementations;
+namespace FoodOrderingSystem.Repositories.Interfaces;
 
-public class CategoryRepository : ICategoryRepository
+public interface ICategoryRepository
 {
-    private readonly AppDbContext _context;
+    Task<IEnumerable<Category>> GetAllAsync();
 
-    public CategoryRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    Task<Category?> GetByIdAsync(int id);
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
-    {
-        return await _context.Categories.ToListAsync();
-    }
+    Task AddAsync(Category category);
 
-    public async Task<Category?> GetByIdAsync(int id)
-    {
-        return await _context.Categories.FindAsync(id);
-    }
+    Task UpdateAsync(Category category);
 
-    public async Task AddAsync(Category category)
-    {
-        await _context.Categories.AddAsync(category);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(Category category)
-    {
-        _context.Categories.Update(category);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        var category = await _context.Categories.FindAsync(id);
-
-        if (category != null)
-        {
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-        }
-    }
+    Task DeleteAsync(int id);
 }
