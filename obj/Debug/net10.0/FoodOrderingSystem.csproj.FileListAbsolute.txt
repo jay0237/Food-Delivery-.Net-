@@ -21,7 +21,6 @@
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/scopedcss/bundle/FoodOrderingSystem.styles.css
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/scopedcss/projectbundle/FoodOrderingSystem.bundle.scp.css
-/Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/compressed/0nfx0h1a4e-{0}-b9sayid5wm-b9sayid5wm.gz
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/compressed/cl3zb01bim-{0}-61n19gt1b8-61n19gt1b8.gz
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/compressed/g67mhxqwqr-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/compressed/k8eld4ff8n-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -213,3 +212,4 @@
 /Users/jai/Documents/food delivery/FoodOrderingSystem/bin/Debug/net10.0/runtimes/win-x64/native/e_sqlite3.dll
 /Users/jai/Documents/food delivery/FoodOrderingSystem/bin/Debug/net10.0/runtimes/win-x86/native/e_sqlite3.dll
 /Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/FoodOrde.A984C035.Up2Date
+/Users/jai/Documents/food delivery/FoodOrderingSystem/obj/Debug/net10.0/compressed/0nfx0h1a4e-{0}-zdfsm9kund-zdfsm9kund.gz
