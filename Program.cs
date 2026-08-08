@@ -2,6 +2,8 @@ using FoodOrderingSystem.Data;
 using FoodOrderingSystem.Models.Entities;
 using FoodOrderingSystem.Repositories.Implementations;
 using FoodOrderingSystem.Repositories.Interfaces;
+using FoodOrderingSystem.Services.Implementation;
+using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
