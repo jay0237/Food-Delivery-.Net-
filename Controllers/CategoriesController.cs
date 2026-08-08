@@ -1,14 +1,13 @@
-using FoodOrderingSystem.Models.Entities;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodOrderingSystem.Controllers;
 
-public class CategoriesController : Controller
+public class CategoryController : Controller
 {
     private readonly ICategoryService _categoryService;
 
-    public CategoriesController(ICategoryService categoryService)
+    public CategoryController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
     }
