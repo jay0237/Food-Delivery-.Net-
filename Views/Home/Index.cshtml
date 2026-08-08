@@ -1,8 +1,33 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-surface">
+    <div class="hero-copy">
+        <p class="eyebrow">Food ordering system</p>
+        <h1>Project work is now visible in the browser.</h1>
+        <p>
+            The app now shows a real landing page, connects the category repository through DI,
+            and seeds sample data so you can see the completed slice immediately.
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-light btn-lg" asp-controller="Categories" asp-action="Index">View categories</a>
+            <span class="hero-note">Controllers, EF Core, and seeded data are wired up.</span>
+        </div>
+    </div>
+
+    <div class="hero-stats">
+        <div class="stat-card">
+            <span>Backend</span>
+            <strong>Working</strong>
+        </div>
+        <div class="stat-card">
+            <span>Database</span>
+            <strong>Seeded</strong>
+        </div>
+        <div class="stat-card">
+            <span>UI</span>
+            <strong>Visible</strong>
+        </div>
+    </div>
+</section>
