@@ -1,20 +1,21 @@
-using FoodOrderingSystem.Repositories.Interfaces;
+using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodOrderingSystem.Controllers;
 
-public class CategoriesController : Controller
+public class CategoryController : Controller
 {
-    private readonly ICategoryRepository _categoryRepository;
+    private readonly ICategoryService _categoryService;
 
-    public CategoriesController(ICategoryRepository categoryRepository)
+    public CategoryController(ICategoryService categoryService)
     {
-        _categoryRepository = categoryRepository;
+        _categoryService = categoryService;
     }
 
     public async Task<IActionResult> Index()
     {
-        var categories = await _categoryRepository.GetAllAsync();
+        var categories = await _categoryService.GetAllAsync();
+
         return View(categories);
     }
 }
