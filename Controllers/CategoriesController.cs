@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodOrderingSystem.Controllers;
 
-public class CategoryController : Controller
+[Route("category")]
+[Route("categories")]
+public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
 
-    public CategoryController(ICategoryService categoryService)
+    public CategoriesController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
     }
 
+    [HttpGet("")]
     public async Task<IActionResult> Index()
     {
         var categories = await _categoryService.GetAllAsync();
