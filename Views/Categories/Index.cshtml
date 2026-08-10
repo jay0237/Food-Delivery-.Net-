@@ -1,30 +1,60 @@
-@model IEnumerable<Category>
+@model IEnumerable<FoodOrderingSystem.Models.Entities.Category>
 
 @{
     ViewData["Title"] = "Categories";
 }
 
-<section class="page-shell">
-    <div class="page-header">
-        <div>
-            <p class="eyebrow">Catalog</p>
-            <h1>Categories</h1>
-            <p>These cards come from the repository and seeded SQLite data.</p>
-        </div>
-        <a class="btn btn-outline-dark" asp-controller="Home" asp-action="Index">Back to dashboard</a>
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Food Categories</h1>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Add Category
+        </a>
     </div>
 
-    <div class="category-grid">
-        @foreach (var category in Model)
-        {
-            <article class="category-card">
-                <div class="category-image" style="background-image: url('@category.ImageUrl');"></div>
-                <div class="category-body">
-                    <h2>@category.Name</h2>
-                    <p>@category.Description</p>
-                    <small>Created @category.CreatedAt.ToString("dd MMM yyyy")</small>
-                </div>
-            </article>
-        }
-    </div>
-</section>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No categories found.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var category in Model)
+                {
+                    <tr>
+                        <td>@category.Id</td>
+                        <td>@category.Name</td>
+                        <td>@category.Description</td>
+                        <td>@category.CreatedAt.ToString("dd MMM yyyy")</td>
+
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete" asp-route-id="@category.Id" class="btn btn-sm btn-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
