@@ -25,14 +25,14 @@ public class CategoriesController : Controller
     }
 
     // GET: /Category/Create
-    [HttpGet]
+    [HttpGet("create")]
     public IActionResult Create()
     {
         return View();
     }
 
     // POST: /Category/Create
-    [HttpPost]
+    [HttpPost("create")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Category category)
     {
@@ -47,7 +47,7 @@ public class CategoriesController : Controller
     }
 
     // GET: /Category/Edit/1
-    [HttpGet]
+    [HttpGet("edit/{id:int}")]
     public async Task<IActionResult> Edit(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -61,7 +61,7 @@ public class CategoriesController : Controller
     }
 
     // POST: /Category/Edit
-    [HttpPost]
+    [HttpPost("edit")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Category category)
     {
@@ -76,7 +76,7 @@ public class CategoriesController : Controller
     }
 
     // GET: /Category/Delete/1
-    [HttpGet]
+    [HttpGet("delete/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -90,7 +90,7 @@ public class CategoriesController : Controller
     }
 
     // POST: /Category/Delete/1
-    [HttpPost, ActionName("Delete")]
+    [HttpPost("delete/{id:int}"), ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
