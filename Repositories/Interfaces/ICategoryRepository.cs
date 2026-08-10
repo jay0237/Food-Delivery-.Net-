@@ -2,15 +2,15 @@ using FoodOrderingSystem.Models.Entities;
 
 namespace FoodOrderingSystem.Repositories.Interfaces;
 
-public interface IFoodRepository
+public interface ICategoryRepository
 {
-    Task<IEnumerable<Food>> GetAllAsync();
+    Task<IEnumerable<Category>> GetAllAsync();
 
-    Task<Food?> GetByIdAsync(int id);
+    Task<Category?> GetByIdAsync(int id);
 
-    Task AddAsync(Food food);
+    Task AddAsync(Category category);
 
-    Task UpdateAsync(Food food);
+    Task UpdateAsync(Category category);
 
     Task DeleteAsync(int id);
 }
