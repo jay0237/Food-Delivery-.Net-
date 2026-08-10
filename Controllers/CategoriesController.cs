@@ -60,10 +60,10 @@ public class CategoriesController : Controller
         return View(category);
     }
 
-    // POST: /Category/Edit
-    [HttpPost("edit")]
+    // POST: /Category/Edit/1
+    [HttpPost("edit/{id:int}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Category category)
+    public async Task<IActionResult> Edit(int id, Category category)
     {
         if (!ModelState.IsValid)
         {
