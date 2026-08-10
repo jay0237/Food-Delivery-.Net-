@@ -4,16 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FoodOrderingSystem.Controllers;
 
-public class CategoryController : Controller
+[Route("category")]
+[Route("categories")]
+public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;
 
-    public CategoryController(ICategoryService categoryService)
+    public CategoriesController(ICategoryService categoryService)
     {
         _categoryService = categoryService;
     }
 
     // GET: /Category
+    [HttpGet("")]
     public async Task<IActionResult> Index()
     {
         var categories = await _categoryService.GetAllAsync();
@@ -22,14 +25,14 @@ public class CategoryController : Controller
     }
 
     // GET: /Category/Create
-    [HttpGet]
+    [HttpGet("create")]
     public IActionResult Create()
     {
         return View();
     }
 
     // POST: /Category/Create
-    [HttpPost]
+    [HttpPost("create")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Category category)
     {
@@ -44,7 +47,7 @@ public class CategoryController : Controller
     }
 
     // GET: /Category/Edit/1
-    [HttpGet]
+    [HttpGet("edit/{id:int}")]
     public async Task<IActionResult> Edit(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -57,10 +60,10 @@ public class CategoryController : Controller
         return View(category);
     }
 
-    // POST: /Category/Edit
-    [HttpPost]
+    // POST: /Category/Edit/1
+    [HttpPost("edit/{id:int}")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Category category)
+    public async Task<IActionResult> Edit(int id, Category category)
     {
         if (!ModelState.IsValid)
         {
@@ -73,7 +76,7 @@ public class CategoryController : Controller
     }
 
     // GET: /Category/Delete/1
-    [HttpGet]
+    [HttpGet("delete/{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -87,7 +90,7 @@ public class CategoryController : Controller
     }
 
     // POST: /Category/Delete/1
-    [HttpPost, ActionName("Delete")]
+    [HttpPost("delete/{id:int}"), ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {

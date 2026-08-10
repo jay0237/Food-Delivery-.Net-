@@ -2,7 +2,7 @@ using FoodOrderingSystem.Data;
 using FoodOrderingSystem.Models.Entities;
 using FoodOrderingSystem.Repositories.Implementations;
 using FoodOrderingSystem.Repositories.Interfaces;
-using FoodOrderingSystem.Services.Implementation;
+using FoodOrderingSystem.Services.Implementations;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
