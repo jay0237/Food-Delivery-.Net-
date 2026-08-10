@@ -1,8 +1,8 @@
 using FoodOrderingSystem.Models.Entities;
 
-namespace FoodOrderingSystem.Repositories.Interfaces;
+namespace FoodOrderingSystem.Services.Interfaces;
 
-public interface IFoodRepository
+public interface IFoodService
 {
     Task<IEnumerable<Food>> GetAllAsync();
 

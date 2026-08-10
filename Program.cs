@@ -6,6 +6,9 @@ using FoodOrderingSystem.Services.Implementations;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+builder.Services.AddScoped<IFoodService, FoodService>();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
