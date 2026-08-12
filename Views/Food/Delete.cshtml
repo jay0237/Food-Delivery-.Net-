@@ -1,0 +1,54 @@
+@model FoodOrderingSystem.Models.Entities.Food
+
+@{
+    ViewData["Title"] = "Delete Food";
+}
+
+<div class="container mt-4">
+
+    <h1>Delete Food</h1>
+
+    <div class="alert alert-danger">
+        Are you sure you want to delete
+        <strong>@Model.Name</strong>?
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <h4>@Model.Name</h4>
+
+            <p>
+                @Model.Description
+            </p>
+
+            <p>
+                <strong>Price:</strong>
+                ₹@Model.Price
+            </p>
+
+            <p>
+                <strong>Category:</strong>
+                @(Model.Category?.Name ?? "Uncategorized")
+            </p>
+
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <button type="submit"
+                class="btn btn-danger">
+            Yes, Delete
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
