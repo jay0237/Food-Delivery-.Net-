@@ -7,10 +7,14 @@ namespace FoodOrderingSystem.Controllers;
 public class FoodController : Controller
 {
     private readonly IFoodService _foodService;
+    private readonly ICategoryService _categoryService;
 
-    public FoodController(IFoodService foodService)
+    public FoodController(
+        IFoodService foodService,
+        ICategoryService categoryService)
     {
         _foodService = foodService;
+        _categoryService = categoryService;
     }
 
     // GET: /Food
@@ -23,8 +27,12 @@ public class FoodController : Controller
 
     // GET: /Food/Create
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
+        var categories = await _categoryService.GetAllAsync();
+
+        ViewBag.Categories = categories;
+
         return View();
     }
 
@@ -35,6 +43,10 @@ public class FoodController : Controller
     {
         if (!ModelState.IsValid)
         {
+            var categories = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categories;
+
             return View(food);
         }
 
@@ -54,6 +66,10 @@ public class FoodController : Controller
             return NotFound();
         }
 
+        var categories = await _categoryService.GetAllAsync();
+
+        ViewBag.Categories = categories;
+
         return View(food);
     }
 
@@ -64,6 +80,10 @@ public class FoodController : Controller
     {
         if (!ModelState.IsValid)
         {
+            var categories = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categories;
+
             return View(food);
         }
 
