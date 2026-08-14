@@ -1,11 +1,13 @@
 using FoodOrderingSystem.Models.Entities;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 namespace FoodOrderingSystem.Controllers;
 
 [Route("category")]
 [Route("categories")]
+[Authorize (Roles = "Admin")]
+
 public class CategoriesController : Controller
 {
     private readonly ICategoryService _categoryService;

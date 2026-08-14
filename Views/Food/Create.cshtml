@@ -1,0 +1,136 @@
+@model FoodOrderingSystem.Models.Entities.Food
+
+@{
+    ViewData["Title"] = "Add Food";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Add Food</h1>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Back to Menu
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">
+                        Food Name
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="Enter food name" />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">
+                        Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Describe the food item"></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label">
+                        Price
+                    </label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+
+                        <input asp-for="Price"
+                               type="number"
+                               step="0.01"
+                               class="form-control"
+                               placeholder="149.00" />
+                    </div>
+
+                    <span asp-validation-for="Price"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">
+                        Category
+                    </label>
+
+                    <select asp-for="CategoryId"
+                            class="form-select">
+
+                        <option value="">
+                            -- Select Category --
+                        </option>
+
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id">
+                                @category.Name
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="CategoryId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ImageUrl" class="form-label">
+                        Image URL
+                    </label>
+
+                    <input asp-for="ImageUrl"
+                           class="form-control"
+                           placeholder="https://example.com/burger.jpg" />
+
+                    <small class="text-muted">
+                        Optional
+                    </small>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input asp-for="IsAvailable"
+                           class="form-check-input" />
+
+                    <label asp-for="IsAvailable"
+                           class="form-check-label">
+                        Food is available
+                    </label>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Create Food
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,95 @@
+@model IEnumerable<FoodOrderingSystem.Models.Entities.Food>
+
+@{
+    ViewData["Title"] = "Food Menu";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Food Menu</h1>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + Add Food
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No food items found.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Available</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var food in Model)
+                {
+                    <tr>
+                        <td>@food.Id</td>
+
+                        <td>
+                            <strong>@food.Name</strong>
+                            <br />
+                            <small>@food.Description</small>
+                        </td>
+
+                        <td>
+                            @( food.Category?.Name ?? "Uncategorized" )
+                        </td>
+
+                        <td>
+                            ₹@food.Price
+                        </td>
+
+                        <td>
+                            @if (food.IsAvailable)
+                            {
+                                <span class="badge bg-success">
+                                    Available
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">
+                                    Unavailable
+                                </span>
+                            }
+                        </td>
+
+                        <td>
+                            <a asp-action="Edit"
+                               asp-route-id="@food.Id"
+                               class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@food.Id"
+                               class="btn btn-sm btn-danger">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+
+</div>

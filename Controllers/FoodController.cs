@@ -1,0 +1,120 @@
+using FoodOrderingSystem.Models.Entities;
+using FoodOrderingSystem.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
+namespace FoodOrderingSystem.Controllers;
+
+[Authorize (Roles = "Admin")]
+public class FoodController : Controller
+{
+    private readonly IFoodService _foodService;
+    private readonly ICategoryService _categoryService;
+
+    public FoodController(
+        IFoodService foodService,
+        ICategoryService categoryService)
+    {
+        _foodService = foodService;
+        _categoryService = categoryService;
+    }
+
+    // GET: /Food
+    public async Task<IActionResult> Index()
+    {
+        var foods = await _foodService.GetAllAsync();
+
+        return View(foods);
+    }
+
+    // GET: /Food/Create
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var categories = await _categoryService.GetAllAsync();
+
+        ViewBag.Categories = categories;
+
+        return View();
+    }
+
+    // POST: /Food/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Food food)
+    {
+        if (!ModelState.IsValid)
+        {
+            var categories = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categories;
+
+            return View(food);
+        }
+
+        await _foodService.AddAsync(food);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    // GET: /Food/Edit/1
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var food = await _foodService.GetByIdAsync(id);
+
+        if (food == null)
+        {
+            return NotFound();
+        }
+
+        var categories = await _categoryService.GetAllAsync();
+
+        ViewBag.Categories = categories;
+
+        return View(food);
+    }
+
+    // POST: /Food/Edit
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Food food)
+    {
+        if (!ModelState.IsValid)
+        {
+            var categories = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categories;
+
+            return View(food);
+        }
+
+        await _foodService.UpdateAsync(food);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    // GET: /Food/Delete/1
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var food = await _foodService.GetByIdAsync(id);
+
+        if (food == null)
+        {
+            return NotFound();
+        }
+
+        return View(food);
+    }
+
+    // POST: /Food/Delete/1
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        await _foodService.DeleteAsync(id);
+
+        return RedirectToAction(nameof(Index));
+    }
+}
