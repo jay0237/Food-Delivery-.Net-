@@ -15,13 +15,57 @@ public class AccountController : Controller
         _authService = authService;
     }
 
-    // GET: /Account/Register
+    
     [HttpGet]
     public IActionResult Register()
     {
         return View();
     }
 
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(
+        string fullName,
+        string email,
+        string password)
+    {
+        if (string.IsNullOrWhiteSpace(fullName) ||
+            string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password))
+        {
+            ModelState.AddModelError(
+                "",
+                "All fields are required.");
+
+            return View();
+        }
+
+        var registered = await _authService.RegisterAsync(
+            fullName,
+            email,
+            password);
+
+        if (!registered)
+        {
+            ModelState.AddModelError(
+                "",
+                "An account with this email already exists.");
+
+            return View();
+        }
+
+        return RedirectToAction(nameof(Login));
+    }
+
+    
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    /
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(
@@ -79,4 +123,21 @@ public class AccountController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
 }
