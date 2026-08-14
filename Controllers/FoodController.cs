@@ -1,9 +1,11 @@
 using FoodOrderingSystem.Models.Entities;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodOrderingSystem.Controllers;
 
+[Authorize (Roles = "Admin")]
 public class FoodController : Controller
 {
     private readonly IFoodService _foodService;
