@@ -8,11 +8,12 @@ public class Order
 
     public User User { get; set; } = null!;
 
-    public DateTime OrderDate { get; set; } = DateTime.UtcNow;
-
     public decimal TotalAmount { get; set; }
 
     public string Status { get; set; } = "Pending";
 
-    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<OrderItem> Items { get; set; }
+        = new List<OrderItem>();
 }
