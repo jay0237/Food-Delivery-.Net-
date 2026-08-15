@@ -51,5 +51,23 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
     modelBuilder.Entity<CartItem>()
         .HasIndex(ci => new { ci.CartId, ci.FoodId })
         .IsUnique();
+
+        modelBuilder.Entity<Order>()
+            .HasOne(o => o.User)
+            .WithMany()
+            .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+    modelBuilder.Entity<OrderItem>()
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.Items)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+    modelBuilder.Entity<OrderItem>()
+        .HasOne(oi => oi.Food)
+        .WithMany()
+        .HasForeignKey(oi => oi.FoodId)
+        .OnDelete(DeleteBehavior.Restrict);
 }
 }
