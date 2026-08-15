@@ -29,4 +29,31 @@ public class CartController : Controller
 
         return View(cart);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Add(
+        int foodId,
+        int quantity = 1)
+    {
+        var userId = GetUserId();
+
+        if (userId == null)
+        {
+            return Challenge();
+        }
+
+        var success = await _cartService.AddToCartAsync(
+            userId.Value,
+            foodId,
+            quantity);
+
+        if (!success)
+        {
+            TempData["Error"] = "Unable to add this food to your cart.";
+        }
+
+        return RedirectToAction("Index", "Food");
+    }
+
 }
