@@ -9,10 +9,32 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Food Menu</h1>
 
-        <a asp-action="Create" class="btn btn-primary">
-            + Add Food
-        </a>
+        <div>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Cart"
+                   asp-action="Index"
+                   class="btn btn-outline-primary me-2">
+                    🛒 My Cart
+                </a>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create"
+                   class="btn btn-primary">
+                    + Add Food
+                </a>
+            }
+        </div>
     </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
 
     @if (!Model.Any())
     {
@@ -40,16 +62,25 @@
                 @foreach (var food in Model)
                 {
                     <tr>
-                        <td>@food.Id</td>
 
                         <td>
-                            <strong>@food.Name</strong>
-                            <br />
-                            <small>@food.Description</small>
+                            @food.Id
                         </td>
 
                         <td>
-                            @( food.Category?.Name ?? "Uncategorized" )
+                            <strong>
+                                @food.Name
+                            </strong>
+
+                            <br />
+
+                            <small class="text-muted">
+                                @food.Description
+                            </small>
+                        </td>
+
+                        <td>
+                            @(food.Category?.Name ?? "Uncategorized")
                         </td>
 
                         <td>
@@ -72,18 +103,47 @@
                         </td>
 
                         <td>
-                            <a asp-action="Edit"
-                               asp-route-id="@food.Id"
-                               class="btn btn-sm btn-warning">
-                                Edit
-                            </a>
 
-                            <a asp-action="Delete"
-                               asp-route-id="@food.Id"
-                               class="btn btn-sm btn-danger">
-                                Delete
-                            </a>
+                            @if (food.IsAvailable)
+                            {
+                                <form asp-controller="Cart"
+                                      asp-action="Add"
+                                      method="post"
+                                      class="d-inline">
+
+                                    <input type="hidden"
+                                           name="foodId"
+                                           value="@food.Id" />
+
+                                    <input type="hidden"
+                                           name="quantity"
+                                           value="1" />
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-primary">
+                                        🛒 Add
+                                    </button>
+
+                                </form>
+                            }
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit"
+                                   asp-route-id="@food.Id"
+                                   class="btn btn-sm btn-warning">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@food.Id"
+                                   class="btn btn-sm btn-danger">
+                                    Delete
+                                </a>
+                            }
+
                         </td>
+
                     </tr>
                 }
 
