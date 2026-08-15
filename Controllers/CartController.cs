@@ -14,4 +14,19 @@ public class CartController : Controller
     {
         _cartService = cartService;
     }
+
+     [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var userId = GetUserId();
+
+        if (userId == null)
+        {
+            return Challenge();
+        }
+
+        var cart = await _cartService.GetOrCreateCartAsync(userId.Value);
+
+        return View(cart);
+    }
 }
