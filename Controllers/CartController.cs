@@ -56,4 +56,24 @@ public class CartController : Controller
         return RedirectToAction("Index", "Food");
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Update(
+        int foodId,
+        int quantity)
+    {
+        var userId = GetUserId();
+
+        if (userId == null)
+        {
+            return Challenge();
+        }
+
+        await _cartService.UpdateQuantityAsync(
+            userId.Value,
+            foodId,
+            quantity);
+
+        return RedirectToAction(nameof(Index));
+    }
 }
