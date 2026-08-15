@@ -76,4 +76,35 @@ public class CartController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Remove(int foodId)
+    {
+        var userId = GetUserId();
+
+        if (userId == null)
+        {
+            return Challenge();
+        }
+
+        await _cartService.RemoveFromCartAsync(
+            userId.Value,
+            foodId);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    private int? GetUserId()
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier);
+
+        if (int.TryParse(userId, out var id))
+        {
+            return id;
+        }
+
+        return null;
+    }
 }
