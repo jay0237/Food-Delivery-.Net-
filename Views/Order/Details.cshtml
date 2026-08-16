@@ -1,0 +1,107 @@
+@model FoodOrderingSystem.Models.Entities.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Order #@Model.Id</h1>
+
+        <a asp-action="MyOrders"
+           class="btn btn-outline-primary">
+            My Orders
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+
+            <p>
+                <strong>Status:</strong>
+
+                @if (Model.Status == "Delivered")
+                {
+                    <span class="badge bg-success">
+                        @Model.Status
+                    </span>
+                }
+                else if (Model.Status == "Cancelled")
+                {
+                    <span class="badge bg-danger">
+                        @Model.Status
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-warning text-dark">
+                        @Model.Status
+                    </span>
+                }
+            </p>
+
+            <p>
+                <strong>Order Date:</strong>
+                @Model.CreatedAt.ToLocalTime()
+            </p>
+
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+            <tr>
+                <th>Food</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+
+                    <td>
+                        @item.Food.Name
+                    </td>
+
+                    <td>
+                        ₹@item.Price
+                    </td>
+
+                    <td>
+                        @item.Quantity
+                    </td>
+
+                    <td>
+                        ₹@(item.Price * item.Quantity)
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+        <tfoot>
+
+            <tr>
+                <th colspan="3"
+                    class="text-end">
+                    Grand Total
+                </th>
+
+                <th>
+                    ₹@Model.TotalAmount
+                </th>
+            </tr>
+
+        </tfoot>
+
+    </table>
+
+</div>
