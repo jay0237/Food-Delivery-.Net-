@@ -15,13 +15,26 @@ public class AdminController : Controller
     }
 
     // GET: /Admin
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public async Task<IActionResult> Index(string? status)
     {
         var orders = await _orderService.GetAllOrdersAsync();
+
+        if (!string.IsNullOrWhiteSpace(status))
+        {
+            orders = orders
+                .Where(o => o.Status.Equals(
+                    status,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
+        ViewBag.SelectedStatus = status;
 
         return View(orders);
     }
 
+    // POST: /Admin/UpdateOrderStatus
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateOrderStatus(
