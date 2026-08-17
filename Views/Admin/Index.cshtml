@@ -2,12 +2,34 @@
 
 @{
     ViewData["Title"] = "Admin Dashboard";
+
+    var orders = Model.ToList();
+
+    var totalOrders = orders.Count;
+
+    var pendingOrders = orders.Count(o =>
+        o.Status == "Pending");
+
+    var preparingOrders = orders.Count(o =>
+        o.Status == "Preparing");
+
+    var deliveredOrders = orders.Count(o =>
+        o.Status == "Delivered");
+
+    var totalRevenue = orders
+        .Where(o => o.Status != "Cancelled")
+        .Sum(o => o.TotalAmount);
 }
 
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>📊 Admin Dashboard</h1>
+        <div>
+            <h1>📊 Admin Dashboard</h1>
+            <p class="text-muted mb-0">
+                Manage customer orders and delivery status.
+            </p>
+        </div>
     </div>
 
     @if (TempData["Error"] != null)
@@ -17,17 +39,142 @@
         </div>
     }
 
-    @if (!Model.Any())
+    <!-- Dashboard Cards -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">
+                        Total Orders
+                    </h6>
+
+                    <h2>
+                        @totalOrders
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">
+                        Pending
+                    </h6>
+
+                    <h2>
+                        @pendingOrders
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">
+                        Preparing
+                    </h6>
+
+                    <h2>
+                        @preparingOrders
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">
+                        Revenue
+                    </h6>
+
+                    <h2>
+                        ₹@totalRevenue
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Filters -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h5 class="mb-3">
+                Filter Orders
+            </h5>
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    All
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-status="Pending"
+                   class="btn btn-outline-warning">
+                    Pending
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-status="Confirmed"
+                   class="btn btn-outline-primary">
+                    Confirmed
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-status="Preparing"
+                   class="btn btn-outline-info">
+                    Preparing
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-status="OutForDelivery"
+                   class="btn btn-outline-dark">
+                    Out for Delivery
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-status="Delivered"
+                   class="btn btn-outline-success">
+                    Delivered
+                </a>
+
+                <a asp-action="Index"
+                   asp-route-status="Cancelled"
+                   class="btn btn-outline-danger">
+                    Cancelled
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Orders -->
+
+    @if (!orders.Any())
     {
         <div class="alert alert-info">
-            No orders have been placed yet.
+            No orders found.
         </div>
     }
     else
     {
         <div class="table-responsive">
 
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover align-middle">
 
                 <thead class="table-dark">
 
@@ -45,17 +192,21 @@
 
                 <tbody>
 
-                    @foreach (var order in Model)
+                    @foreach (var order in orders)
                     {
                         <tr>
 
                             <td>
-                                #@order.Id
+                                <strong>
+                                    #@order.Id
+                                </strong>
                             </td>
 
                             <td>
                                 @order.User.FullName
+
                                 <br />
+
                                 <small class="text-muted">
                                     @order.User.Email
                                 </small>
@@ -70,10 +221,13 @@
                             </td>
 
                             <td>
-                                ₹@order.TotalAmount
+                                <strong>
+                                    ₹@order.TotalAmount
+                                </strong>
                             </td>
 
                             <td>
+
                                 @if (order.Status == "Delivered")
                                 {
                                     <span class="badge bg-success">
@@ -92,6 +246,7 @@
                                         @order.Status
                                     </span>
                                 }
+
                             </td>
 
                             <td>
