@@ -31,23 +31,6 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
     base.OnModelCreating(modelBuilder);
 
-    modelBuilder.Entity<User>().HasData(
-        new User{
-            Id = 1,
-            FullName = "System Admin",
-            Email = "admin@foodordering.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
-            Role = "Admin",
-            CreatedAt = new DateTime(
-                2026,
-                1,
-                1,
-                0,
-                0,
-                0,
-                DateTimeKind.Utc)
-        }
-    );
     modelBuilder.Entity<Cart>()
         .HasOne(c => c.User)
         .WithOne()

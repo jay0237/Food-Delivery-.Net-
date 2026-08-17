@@ -1,0 +1,160 @@
+@model IEnumerable<FoodOrderingSystem.Models.Entities.Order>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📊 Admin Dashboard</h1>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No orders have been placed yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                #@order.Id
+                            </td>
+
+                            <td>
+                                @order.User.FullName
+                                <br />
+                                <small class="text-muted">
+                                    @order.User.Email
+                                </small>
+                            </td>
+
+                            <td>
+                                @order.CreatedAt.ToLocalTime()
+                            </td>
+
+                            <td>
+                                @order.Items.Sum(i => i.Quantity)
+                            </td>
+
+                            <td>
+                                ₹@order.TotalAmount
+                            </td>
+
+                            <td>
+                                @if (order.Status == "Delivered")
+                                {
+                                    <span class="badge bg-success">
+                                        Delivered
+                                    </span>
+                                }
+                                else if (order.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger">
+                                        Cancelled
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        @order.Status
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+
+                                <form asp-action="UpdateOrderStatus"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="orderId"
+                                           value="@order.Id" />
+
+                                    <select name="status"
+                                            class="form-select form-select-sm mb-2">
+
+                                        <option value="Pending"
+                                            selected="@(order.Status == "Pending")">
+                                            Pending
+                                        </option>
+
+                                        <option value="Confirmed"
+                                            selected="@(order.Status == "Confirmed")">
+                                            Confirmed
+                                        </option>
+
+                                        <option value="Preparing"
+                                            selected="@(order.Status == "Preparing")">
+                                            Preparing
+                                        </option>
+
+                                        <option value="OutForDelivery"
+                                            selected="@(order.Status == "OutForDelivery")">
+                                            Out for Delivery
+                                        </option>
+
+                                        <option value="Delivered"
+                                            selected="@(order.Status == "Delivered")">
+                                            Delivered
+                                        </option>
+
+                                        <option value="Cancelled"
+                                            selected="@(order.Status == "Cancelled")">
+                                            Cancelled
+                                        </option>
+
+                                    </select>
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-primary w-100">
+                                        Update
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>
