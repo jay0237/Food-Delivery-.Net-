@@ -1,6 +1,7 @@
 using FoodOrderingSystem.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace FoodOrderingSystem.Data;
 
 public class AppDbContext : DbContext
