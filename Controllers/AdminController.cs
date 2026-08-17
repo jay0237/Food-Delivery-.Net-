@@ -21,4 +21,23 @@ public class AdminController : Controller
 
         return View(orders);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateOrderStatus(
+        int orderId,
+        string status)
+    {
+        var success = await _orderService.UpdateStatusAsync(
+            orderId,
+            status);
+
+        if (!success)
+        {
+            TempData["Error"] =
+                "Unable to update the order status.";
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }
