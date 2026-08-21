@@ -101,7 +101,7 @@ public class MenuController : ControllerBase
         var food = new Food
         {
             Name = dto.Name,
-            Description = dto.Description,
+            Description = dto.Description ?? string.Empty,
             Price = dto.Price,
             CategoryId = dto.CategoryId,
             IsAvailable = dto.IsAvailable,
@@ -164,7 +164,7 @@ public class MenuController : ControllerBase
         }
 
         food.Name = dto.Name;
-        food.Description = dto.Description;
+        food.Description = dto.Description ?? string.Empty;
         food.Price = dto.Price;
         food.CategoryId = dto.CategoryId;
         food.IsAvailable = dto.IsAvailable;
