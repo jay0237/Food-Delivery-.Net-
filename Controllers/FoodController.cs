@@ -10,13 +10,16 @@ public class FoodController : Controller
 {
     private readonly IFoodService _foodService;
     private readonly ICategoryService _categoryService;
+    private readonly IOpenMenuService _openMenuService;
 
     public FoodController(
         IFoodService foodService,
-        ICategoryService categoryService)
+        ICategoryService categoryService,
+        IOpenMenuService openMenuService)
     {
         _foodService = foodService;
         _categoryService = categoryService;
+        _openMenuService = openMenuService;
     }
 
     // GET: /Food
@@ -116,5 +119,18 @@ public class FoodController : Controller
         await _foodService.DeleteAsync(id);
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // GET: /Food/SearchExternalMenu
+    [HttpGet]
+    public async Task<IActionResult> SearchExternalMenu(string search, string postalCode, string country)
+    {
+        if (string.IsNullOrWhiteSpace(search) || string.IsNullOrWhiteSpace(postalCode) || string.IsNullOrWhiteSpace(country))
+        {
+            return View(new List<FoodOrderingSystem.Models.DTOs.OpenMenu.OpenMenuItemDto>());
+        }
+
+        var results = await _openMenuService.SearchMenuItemsAsync(search, postalCode, country);
+        return View(results);
     }
 }
