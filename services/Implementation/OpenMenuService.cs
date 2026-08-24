@@ -36,7 +36,7 @@ namespace FoodOrderingSystem.Services.Implementations
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var result = JsonSerializer.Deserialize<OpenMenuSearchResponse>(jsonString, options);
 
-            var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemResponse>();
+            var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemDto>();
 
             var dtos = new List<OpenMenuItemDto>();
             foreach (var item in items)
