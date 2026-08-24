@@ -29,6 +29,10 @@ namespace FoodOrderingSystem.Services.Implementations
 
             var jsonString = await response.Content.ReadAsStringAsync();
 
+            Console.WriteLine("===== OPENMENU RESPONSE =====");
+            Console.WriteLine(jsonString);
+            Console.WriteLine("============================");
+
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var result = JsonSerializer.Deserialize<OpenMenuSearchResponse>(jsonString, options);
 
