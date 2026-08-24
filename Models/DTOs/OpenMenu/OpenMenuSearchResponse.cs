@@ -1,55 +1,48 @@
 using System.Text.Json.Serialization;
 
-namespace FoodOrderingSystem.Models.DTOs.OpenMenu
+namespace FoodOrderingSystem.Models.DTOs.OpenMenu;
+
+public class OpenMenuSearchResponse
 {
-    public class OpenMenuSearchResponse
-    {
-        [JsonPropertyName("response")]
-        public OpenMenuResponseWrapper? Response { get; set; }
-    }
+    [JsonPropertyName("response")]
+    public OpenMenuResponse Response { get; set; } = new();
+}
 
-    public class OpenMenuResponseWrapper
-    {
-        [JsonPropertyName("result")]
-        public OpenMenuResult? Result { get; set; }
-    }
+public class OpenMenuResponse
+{
+    [JsonPropertyName("api")]
+    public OpenMenuApiInfo Api { get; set; } = new();
 
-    public class OpenMenuResult
-    {
-        [JsonPropertyName("items")]
-        public List<OpenMenuItemResponse>? Items { get; set; }
-    }
+    [JsonPropertyName("result")]
+    public OpenMenuResult Result { get; set; } = new();
+}
 
-    public class OpenMenuItemResponse
-    {
-        [JsonPropertyName("menu_item_name")]
-        public string? MenuItemName { get; set; }
+public class OpenMenuApiInfo
+{
+    [JsonPropertyName("status")]
+    public int Status { get; set; }
 
-        [JsonPropertyName("menu_item_description")]
-        public string? MenuItemDescription { get; set; }
+    [JsonPropertyName("api_version")]
+    public string? ApiVersion { get; set; }
+}
 
-        [JsonPropertyName("menu_item_price")]
-        public string? MenuItemPrice { get; set; } 
+public class OpenMenuResult
+{
+    [JsonPropertyName("restaurants")]
+    public List<OpenMenuRestaurantDto> Restaurants { get; set; } = new();
 
-        [JsonPropertyName("image_url")]
-        public string? ImageUrl { get; set; }
+    [JsonPropertyName("items")]
+    public List<OpenMenuItemDto> Items { get; set; } = new();
 
-        [JsonPropertyName("restaurant_name")]
-        public string? RestaurantName { get; set; }
+    [JsonPropertyName("menus")]
+    public List<OpenMenuDto> Menus { get; set; } = new();
+}
 
-        [JsonPropertyName("cuisine_type_primary")]
-        public string? CuisineTypePrimary { get; set; }
+public class OpenMenuDto
+{
+    [JsonPropertyName("restaurant_name")]
+    public string RestaurantName { get; set; } = string.Empty;
 
-        [JsonPropertyName("city_town")]
-        public string? CityTown { get; set; }
-
-        [JsonPropertyName("state_province")]
-        public string? StateProvince { get; set; }
-
-        [JsonPropertyName("country")]
-        public string? Country { get; set; }
-
-        [JsonPropertyName("address_1")]
-        public string? Address1 { get; set; }
-    }
+    [JsonPropertyName("items")]
+    public List<OpenMenuItemDto> Items { get; set; } = new();
 }
