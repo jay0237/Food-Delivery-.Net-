@@ -29,25 +29,27 @@ namespace FoodOrderingSystem.Services.Implementations
 
             var jsonString = await response.Content.ReadAsStringAsync();
 
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            Console.WriteLine("===== OPENMENU RESPONSE =====");
+            Console.WriteLine(jsonString);
+            Console.WriteLine("============================");
+
+            var options = new JsonSerializerOptions 
+            { 
+                PropertyNameCaseInsensitive = true,
+                NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString
+            };
             var result = JsonSerializer.Deserialize<OpenMenuSearchResponse>(jsonString, options);
 
-            var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemResponse>();
+            var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemDto>();
 
             var dtos = new List<OpenMenuItemDto>();
             foreach (var item in items)
             {
-                decimal? price = null;
-                if (!string.IsNullOrWhiteSpace(item.MenuItemPrice) && decimal.TryParse(item.MenuItemPrice, out decimal parsedPrice))
-                {
-                    price = parsedPrice;
-                }
-
                 dtos.Add(new OpenMenuItemDto
                 {
                     MenuItemName = item.MenuItemName ?? string.Empty,
                     MenuItemDescription = item.MenuItemDescription ?? string.Empty,
-                    MenuItemPrice = price,
+                    MenuItemPrice = item.MenuItemPrice,
                     ImageUrl = item.ImageUrl,
                     RestaurantName = item.RestaurantName ?? string.Empty,
                     CuisineTypePrimary = item.CuisineTypePrimary,
