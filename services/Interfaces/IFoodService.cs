@@ -8,6 +8,8 @@ public interface IFoodService
 
     Task<Food?> GetByIdAsync(int id);
 
+    Task<bool> ExistsAsync(string name, string restaurantName);
+
     Task AddAsync(Food food);
 
     Task UpdateAsync(Food food);

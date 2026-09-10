@@ -28,6 +28,16 @@ public class FoodRepository : IFoodRepository
             .FirstOrDefaultAsync(f => f.Id == id);
     }
 
+    public async Task<bool> ExistsAsync(string name, string restaurantName)
+    {
+        var normalizedName = name.Trim().ToLower();
+        var restaurantMarker = $"Restaurant: {restaurantName.Trim()}";
+
+        return await _context.Foods.AnyAsync(food =>
+            food.Name.ToLower() == normalizedName &&
+            EF.Functions.Like(food.Description, $"%{restaurantMarker}%"));
+    }
+
     public async Task AddAsync(Food food)
     {
         await _context.Foods.AddAsync(food);

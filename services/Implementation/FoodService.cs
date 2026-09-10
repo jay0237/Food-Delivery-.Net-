@@ -23,6 +23,11 @@ public class FoodService : IFoodService
         return await _repository.GetByIdAsync(id);
     }
 
+    public async Task<bool> ExistsAsync(string name, string restaurantName)
+    {
+        return await _repository.ExistsAsync(name, restaurantName);
+    }
+
     public async Task AddAsync(Food food)
     {
         await _repository.AddAsync(food);
