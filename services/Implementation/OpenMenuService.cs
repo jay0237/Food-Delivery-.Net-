@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace FoodOrderingSystem.Services.Implementations
 {
@@ -13,17 +12,14 @@ namespace FoodOrderingSystem.Services.Implementations
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
-        private readonly ILogger<OpenMenuService> _logger;
 
         public OpenMenuService(
             HttpClient httpClient,
-            IConfiguration configuration,
-            ILogger<OpenMenuService> logger)
+            IConfiguration configuration)
         {
             _httpClient = httpClient;
             _apiKey = configuration["OpenMenu:ApiKey"]
                 ?? throw new InvalidOperationException("OpenMenu:ApiKey is not configured.");
-            _logger = logger;
         }
 
         public async Task<List<OpenMenuItemDto>> SearchMenuItemsAsync(string search, string postalCode, string country)
@@ -44,6 +40,9 @@ namespace FoodOrderingSystem.Services.Implementations
             var result = JsonSerializer.Deserialize<OpenMenuSearchResponse>(jsonString, options);
 
             var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemDto>();
+            var restaurants = (result?.Response?.Result?.Restaurants ?? new List<OpenMenuRestaurantDto>())
+                .Where(restaurant => !string.IsNullOrWhiteSpace(restaurant.RestaurantName))
+                .ToDictionary(restaurant => restaurant.RestaurantName, StringComparer.OrdinalIgnoreCase);
 
             foreach (var menu in result?.Response?.Result?.Menus ?? new List<OpenMenuDto>())
             {
@@ -55,6 +54,18 @@ namespace FoodOrderingSystem.Services.Implementations
                     }
 
                     items.Add(item);
+                }
+            }
+
+            foreach (var item in items)
+            {
+                if (restaurants.TryGetValue(item.RestaurantName, out var restaurant))
+                {
+                    item.Address1 ??= restaurant.Address1;
+                    item.CityTown ??= restaurant.CityTown;
+                    item.StateProvince ??= restaurant.StateProvince;
+                    item.Country ??= restaurant.Country;
+                    item.CuisineTypePrimary ??= restaurant.CuisineTypePrimary;
                 }
             }
 
