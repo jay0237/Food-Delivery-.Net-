@@ -6,7 +6,6 @@ using System.Text.Json;
 
 namespace FoodOrderingSystem.Controllers;
 
-[Authorize (Roles = "Admin")]
 public class FoodController : Controller
 {
     private readonly IFoodService _foodService;
@@ -33,6 +32,7 @@ public class FoodController : Controller
 
     // GET: /Food/Create
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
         var categories = await _categoryService.GetAllAsync();
@@ -45,6 +45,7 @@ public class FoodController : Controller
     // POST: /Food/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(Food food)
     {
         if (!ModelState.IsValid)
@@ -63,6 +64,7 @@ public class FoodController : Controller
 
     // GET: /Food/Edit/1
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var food = await _foodService.GetByIdAsync(id);
@@ -82,6 +84,7 @@ public class FoodController : Controller
     // POST: /Food/Edit
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(Food food)
     {
         if (!ModelState.IsValid)
@@ -100,6 +103,7 @@ public class FoodController : Controller
 
     // GET: /Food/Delete/1
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var food = await _foodService.GetByIdAsync(id);
@@ -115,6 +119,7 @@ public class FoodController : Controller
     // POST: /Food/Delete/1
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         await _foodService.DeleteAsync(id);
@@ -124,6 +129,7 @@ public class FoodController : Controller
 
     // GET: /Food/SearchExternalMenu
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> SearchExternalMenu(string? search, string? postalCode, string? country)
     {
         ViewBag.Categories = await _categoryService.GetAllAsync();
@@ -156,6 +162,7 @@ public class FoodController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> ImportExternalFood(
         FoodOrderingSystem.Models.DTOs.OpenMenu.OpenMenuItemDto item,
         int categoryId,
