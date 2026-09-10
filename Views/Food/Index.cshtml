@@ -21,6 +21,11 @@
 
             @if (User.IsInRole("Admin"))
             {
+                <a asp-action="SearchExternalMenu"
+                   class="btn btn-outline-primary me-2">
+                    Import from OpenMenu
+                </a>
+
                 <a asp-action="Create"
                    class="btn btn-primary">
                     + Add Food
