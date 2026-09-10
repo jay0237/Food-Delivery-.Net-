@@ -1,11 +1,11 @@
 using FoodOrderingSystem.Models.DTOs.OpenMenu;
 using FoodOrderingSystem.Services.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace FoodOrderingSystem.Services.Implementations
 {
@@ -13,25 +13,28 @@ namespace FoodOrderingSystem.Services.Implementations
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
+        private readonly ILogger<OpenMenuService> _logger;
 
-        public OpenMenuService(HttpClient httpClient, IConfiguration configuration)
+        public OpenMenuService(
+            HttpClient httpClient,
+            IConfiguration configuration,
+            ILogger<OpenMenuService> logger)
         {
             _httpClient = httpClient;
-            _apiKey = configuration["OpenMenu:ApiKey"] ?? string.Empty;
+            _apiKey = configuration["OpenMenu:ApiKey"]
+                ?? throw new InvalidOperationException("OpenMenu:ApiKey is not configured.");
+            _logger = logger;
         }
 
         public async Task<List<OpenMenuItemDto>> SearchMenuItemsAsync(string search, string postalCode, string country)
         {
-            var url = $"https://www.openmenu.com/api/v2/search.php?key={_apiKey}&s={Uri.EscapeDataString(search ?? "")}&postal_code={Uri.EscapeDataString(postalCode ?? "")}&country={Uri.EscapeDataString(country ?? "")}";
+            var query = $"key={Uri.EscapeDataString(_apiKey)}&s={Uri.EscapeDataString(search)}&postal_code={Uri.EscapeDataString(postalCode)}&country={Uri.EscapeDataString(country)}";
+            var url = $"https://www.openmenu.com/api/v2/search.php?{query}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine("===== OPENMENU RESPONSE =====");
-            Console.WriteLine(jsonString);
-            Console.WriteLine("============================");
 
             var options = new JsonSerializerOptions 
             { 
@@ -42,25 +45,20 @@ namespace FoodOrderingSystem.Services.Implementations
 
             var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemDto>();
 
-            var dtos = new List<OpenMenuItemDto>();
-            foreach (var item in items)
+            foreach (var menu in result?.Response?.Result?.Menus ?? new List<OpenMenuDto>())
             {
-                dtos.Add(new OpenMenuItemDto
+                foreach (var item in menu.Items ?? new List<OpenMenuItemDto>())
                 {
-                    MenuItemName = item.MenuItemName ?? string.Empty,
-                    MenuItemDescription = item.MenuItemDescription ?? string.Empty,
-                    MenuItemPrice = item.MenuItemPrice,
-                    ImageUrl = item.ImageUrl,
-                    RestaurantName = item.RestaurantName ?? string.Empty,
-                    CuisineTypePrimary = item.CuisineTypePrimary,
-                    CityTown = item.CityTown,
-                    StateProvince = item.StateProvince,
-                    Country = item.Country,
-                    Address1 = item.Address1
-                });
+                    if (string.IsNullOrWhiteSpace(item.RestaurantName))
+                    {
+                        item.RestaurantName = menu.RestaurantName;
+                    }
+
+                    items.Add(item);
+                }
             }
 
-            return dtos;
+            return items;
         }
     }
 }
