@@ -1,6 +1,5 @@
 using FoodOrderingSystem.Models.DTOs.OpenMenu;
 using FoodOrderingSystem.Services.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
@@ -14,24 +13,24 @@ namespace FoodOrderingSystem.Services.Implementations
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
 
-        public OpenMenuService(HttpClient httpClient, IConfiguration configuration)
+        public OpenMenuService(
+            HttpClient httpClient,
+            IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _apiKey = configuration["OpenMenu:ApiKey"] ?? string.Empty;
+            _apiKey = configuration["OpenMenu:ApiKey"]
+                ?? throw new InvalidOperationException("OpenMenu:ApiKey is not configured.");
         }
 
         public async Task<List<OpenMenuItemDto>> SearchMenuItemsAsync(string search, string postalCode, string country)
         {
-            var url = $"https://www.openmenu.com/api/v2/search.php?key={_apiKey}&s={Uri.EscapeDataString(search ?? "")}&postal_code={Uri.EscapeDataString(postalCode ?? "")}&country={Uri.EscapeDataString(country ?? "")}";
+            var query = $"key={Uri.EscapeDataString(_apiKey)}&s={Uri.EscapeDataString(search)}&postal_code={Uri.EscapeDataString(postalCode)}&country={Uri.EscapeDataString(country)}";
+            var url = $"https://www.openmenu.com/api/v2/search.php?{query}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();
-
-            Console.WriteLine("===== OPENMENU RESPONSE =====");
-            Console.WriteLine(jsonString);
-            Console.WriteLine("============================");
 
             var options = new JsonSerializerOptions 
             { 
@@ -41,26 +40,36 @@ namespace FoodOrderingSystem.Services.Implementations
             var result = JsonSerializer.Deserialize<OpenMenuSearchResponse>(jsonString, options);
 
             var items = result?.Response?.Result?.Items ?? new List<OpenMenuItemDto>();
+            var restaurants = (result?.Response?.Result?.Restaurants ?? new List<OpenMenuRestaurantDto>())
+                .Where(restaurant => !string.IsNullOrWhiteSpace(restaurant.RestaurantName))
+                .ToDictionary(restaurant => restaurant.RestaurantName, StringComparer.OrdinalIgnoreCase);
 
-            var dtos = new List<OpenMenuItemDto>();
-            foreach (var item in items)
+            foreach (var menu in result?.Response?.Result?.Menus ?? new List<OpenMenuDto>())
             {
-                dtos.Add(new OpenMenuItemDto
+                foreach (var item in menu.Items ?? new List<OpenMenuItemDto>())
                 {
-                    MenuItemName = item.MenuItemName ?? string.Empty,
-                    MenuItemDescription = item.MenuItemDescription ?? string.Empty,
-                    MenuItemPrice = item.MenuItemPrice,
-                    ImageUrl = item.ImageUrl,
-                    RestaurantName = item.RestaurantName ?? string.Empty,
-                    CuisineTypePrimary = item.CuisineTypePrimary,
-                    CityTown = item.CityTown,
-                    StateProvince = item.StateProvince,
-                    Country = item.Country,
-                    Address1 = item.Address1
-                });
+                    if (string.IsNullOrWhiteSpace(item.RestaurantName))
+                    {
+                        item.RestaurantName = menu.RestaurantName;
+                    }
+
+                    items.Add(item);
+                }
             }
 
-            return dtos;
+            foreach (var item in items)
+            {
+                if (restaurants.TryGetValue(item.RestaurantName, out var restaurant))
+                {
+                    item.Address1 ??= restaurant.Address1;
+                    item.CityTown ??= restaurant.CityTown;
+                    item.StateProvince ??= restaurant.StateProvince;
+                    item.Country ??= restaurant.Country;
+                    item.CuisineTypePrimary ??= restaurant.CuisineTypePrimary;
+                }
+            }
+
+            return items;
         }
     }
 }
