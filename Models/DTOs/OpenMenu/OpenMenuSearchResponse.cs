@@ -41,7 +41,6 @@ public class OpenMenuResult
 public class OpenMenuDto
 {
     [JsonPropertyName("restaurant_name")]
-    [JsonPropertyName("restaurant_name")]
     public string RestaurantName { get; set; } = string.Empty;
 
     [JsonPropertyName("items")]
