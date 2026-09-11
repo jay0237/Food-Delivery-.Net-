@@ -6,7 +6,6 @@ namespace FoodOrderingSystem.Controllers;
 
 [Route("category")]
 [Route("categories")]
-[Authorize (Roles = "Admin")]
 
 public class CategoriesController : Controller
 {
@@ -28,6 +27,7 @@ public class CategoriesController : Controller
 
     // GET: /Category/Create
     [HttpGet("create")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Create()
     {
         return View();
@@ -36,6 +36,7 @@ public class CategoriesController : Controller
     // POST: /Category/Create
     [HttpPost("create")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(Category category)
     {
         if (!ModelState.IsValid)
@@ -50,6 +51,7 @@ public class CategoriesController : Controller
 
     // GET: /Category/Edit/1
     [HttpGet("edit/{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -65,6 +67,7 @@ public class CategoriesController : Controller
     // POST: /Category/Edit/1
     [HttpPost("edit/{id:int}")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Edit(int id, Category category)
     {
         if (!ModelState.IsValid)
@@ -79,6 +82,7 @@ public class CategoriesController : Controller
 
     // GET: /Category/Delete/1
     [HttpGet("delete/{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -94,6 +98,7 @@ public class CategoriesController : Controller
     // POST: /Category/Delete/1
     [HttpPost("delete/{id:int}"), ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         await _categoryService.DeleteAsync(id);

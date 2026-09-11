@@ -85,7 +85,51 @@ using (var scope = app.Services.CreateScope())
         );
     }
 
+    var additionalCategories = new[]
+    {
+        new { Name = "Healthy", Description = "Fresh bowls and feel-good plates.", ImageUrl = "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80" },
+        new { Name = "Asian", Description = "Bold noodles, bao, and wok-fired favourites.", ImageUrl = "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80" }
+    };
+
+    context.Categories.AddRange(additionalCategories
+        .Where(category => !context.Categories.Any(existing => existing.Name == category.Name))
+        .Select(category => new Category
+        {
+            Name = category.Name,
+            Description = category.Description,
+            ImageUrl = category.ImageUrl
+        }));
+
     context.SaveChanges();
+
+    if (!context.Foods.Any())
+    {
+        var categories = context.Categories.ToDictionary(category => category.Name);
+        var seededFoods = new[]
+        {
+            new { Name = "Smoky Smash Burger", Category = "Burgers", Description = "Double smashed patties, American cheese, pickles, and house sauce.", Price = 289m, ImageUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" },
+            new { Name = "Truffle Mushroom Pizza", Category = "Pizza", Description = "Wild mushrooms, mozzarella, truffle oil, and fresh herbs.", Price = 449m, ImageUrl = "https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=900&q=85" },
+            new { Name = "Paneer Tikka Bowl", Category = "Healthy", Description = "Charred paneer, greens, grains, and a bright mint dressing.", Price = 329m, ImageUrl = "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85" },
+            new { Name = "Crispy Chicken Bao", Category = "Asian", Description = "Three fluffy bao, crispy chicken, slaw, and chilli mayo.", Price = 379m, ImageUrl = "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=85" },
+            new { Name = "Mango Chili Cooler", Category = "Drinks", Description = "Fresh mango, lime, chilli salt, and sparkling water.", Price = 149m, ImageUrl = "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=85" },
+            new { Name = "Classic Margherita", Category = "Pizza", Description = "San Marzano tomato, fior di latte, basil, and olive oil.", Price = 349m, ImageUrl = "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=85" }
+        };
+
+        context.Foods.AddRange(seededFoods
+            .Where(food => categories.ContainsKey(food.Category))
+            .Select(food => new Food
+            {
+                Name = food.Name,
+                Description = food.Description,
+                Price = food.Price,
+                ImageUrl = food.ImageUrl,
+                CategoryId = categories[food.Category].Id,
+                IsAvailable = true,
+                CreatedAt = DateTime.UtcNow
+            }));
+
+        context.SaveChanges();
+    }
 }
 
 // Configure the HTTP request pipeline
