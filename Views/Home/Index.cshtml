@@ -1,33 +1,54 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+﻿@model FoodOrderingSystem.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Discover food";
 }
 
-<section class="hero-surface">
+<section class="discovery-hero">
     <div class="hero-copy">
-        <p class="eyebrow">Food ordering system</p>
-        <h1>Project work is now visible in the browser.</h1>
-        <p>
-            The app now shows a real landing page, connects the category repository through DI,
-            and seeds sample data so you can see the completed slice immediately.
-        </p>
-        <div class="hero-actions">
-            <a class="btn btn-light btn-lg" asp-controller="Categories" asp-action="Index">View categories</a>
-            <span class="hero-note">Controllers, EF Core, and seeded data are wired up.</span>
-        </div>
+        <p class="eyebrow">Your city, on a plate</p>
+        <h1>Good food is<br /><em>always</em> a good idea.</h1>
+        <p class="hero-lede">Discover local favourites, order in a few taps, and make any meal feel like a plan.</p>
+        <form class="search-box" asp-controller="Food" asp-action="Index" method="get">
+            <span aria-hidden="true">&#9906;</span>
+            <input type="search" name="search" placeholder="Search for a dish or craving" aria-label="Search menu" />
+            <button type="submit">Find food</button>
+        </form>
+        <div class="hero-meta"><span class="live-dot"></span> @Model.MenuCount+ dishes ready to order</div>
     </div>
+    <div class="hero-art" aria-label="A bowl of fresh food" role="img"></div>
+</section>
 
-    <div class="hero-stats">
-        <div class="stat-card">
-            <span>Backend</span>
-            <strong>Working</strong>
-        </div>
-        <div class="stat-card">
-            <span>Database</span>
-            <strong>Seeded</strong>
-        </div>
-        <div class="stat-card">
-            <span>UI</span>
-            <strong>Visible</strong>
-        </div>
+<section class="section-block">
+    <div class="section-heading"><div><p class="eyebrow">Browse the mood</p><h2>What are you craving?</h2></div><a class="text-link" asp-controller="Categories" asp-action="Index">See all <span>&rarr;</span></a></div>
+    <div class="category-strip">
+        @foreach (var category in Model.Categories.Take(5))
+        {
+            <a class="category-pill" asp-controller="Food" asp-action="Index">
+                <span class="category-thumb" style="background-image:url('@category.ImageUrl')"></span>
+                <span><strong>@category.Name</strong><small>Explore dishes</small></span>
+            </a>
+        }
+    </div>
+</section>
+
+<section class="section-block featured-block">
+    <div class="section-heading"><div><p class="eyebrow">Fresh from the kitchen</p><h2>Popular near you</h2></div><a class="text-link" asp-controller="Food" asp-action="Index">View menu <span>&rarr;</span></a></div>
+    <div class="food-grid">
+        @foreach (var food in Model.FeaturedFoods)
+        {
+            <article class="food-card">
+                <div class="food-image" style="background-image:url('@food.ImageUrl')"><span class="rating">&#9733; 4.8</span></div>
+                <div class="food-info"><div><h3>@food.Name</h3><p>@(food.Category?.Name ?? "Chef's special")</p></div><strong class="price">₹@food.Price.ToString("0")</strong></div>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post"><input type="hidden" name="foodId" value="@food.Id" /><input type="hidden" name="quantity" value="1" /><button class="add-button" type="submit">+ Add</button></form>
+                }
+                else
+                {
+                    <a class="add-button" asp-controller="Account" asp-action="Login">+ Add</a>
+                }
+            </article>
+        }
     </div>
 </section>
