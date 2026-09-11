@@ -16,12 +16,7 @@ public class HomeController : Controller
         _categoryService = categoryService;
     }
 
-    public IActionResult Index()
-    {
-        return ViewAsync();
-    }
-
-    private async Task<IActionResult> ViewAsync()
+    public async Task<IActionResult> Index()
     {
         var foods = (await _foodService.GetAllAsync())
             .Where(food => food.IsAvailable)
