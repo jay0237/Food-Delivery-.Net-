@@ -1,0 +1,78 @@
+@model FoodOrderingSystem.Models.MenuViewModel
+
+@{
+    ViewData["Title"] = "Menu";
+    var fallbackImage = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85";
+}
+
+<section class="menu-page-heading">
+    <div>
+        <p class="eyebrow">Freshly prepared for you</p>
+        <h1>Explore our menu</h1>
+    </div>
+    <form asp-action="Index" method="get" class="compact-search">
+        <input name="search" value="@Model.Search" placeholder="Search food" aria-label="Search food" />
+        <button type="submit" aria-label="Search">&#9906;</button>
+    </form>
+</section>
+
+<div class="menu-admin-tools">
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="SearchExternalMenu" class="text-link">Import from OpenMenu</a>
+        <a asp-action="Create" class="text-link">+ Add food</a>
+    }
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (!Model.Foods.Any())
+{
+    <div class="empty-menu">
+        <h2>No dishes found</h2>
+        <p>Try a different search.</p>
+        <a class="add-button" asp-action="Index">Show all dishes</a>
+    </div>
+}
+else
+{
+    <div class="reference-food-grid">
+        @foreach (var food in Model.Foods)
+        {
+            var category = food.Category?.Name ?? "Chef's special";
+            var image = string.IsNullOrWhiteSpace(food.ImageUrl) ? fallbackImage : food.ImageUrl;
+            <article class="reference-food-card">
+                <a asp-action="Details" asp-route-id="@food.Id" class="reference-image-link">
+                    <div class="reference-food-image" style="background-image:url('@image')">
+                        <span class="food-category">@category</span>
+                        <span class="favorite-button" aria-label="Save @food.Name">&#9825;</span>
+                    </div>
+                </a>
+                <div class="reference-food-content">
+                    <div class="reference-food-title-row">
+                        <h2><a asp-action="Details" asp-route-id="@food.Id">@food.Name</a></h2>
+                    </div>
+                    <p class="reference-food-description">@food.Description</p>
+                    <div class="reference-food-footer">
+                        <strong>₹@food.Price.ToString("0.00")</strong>
+                        @if (food.IsAvailable)
+                        {
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+                                <input type="hidden" name="foodId" value="@food.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button class="reference-add-button" type="submit"><span aria-hidden="true">&#128722;</span> Add</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="reference-unavailable">Unavailable</span>
+                        }
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}
