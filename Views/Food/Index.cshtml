@@ -1,200 +1,78 @@
 @model FoodOrderingSystem.Models.MenuViewModel
 
 @{
-    ViewData["Title"] = "Food Menu";
+    ViewData["Title"] = "Menu";
+    var fallbackImage = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85";
 }
 
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <p class="eyebrow">Find your next favourite</p>
-            <h1>Food Menu</h1>
-        </div>
-
-        <div>
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <a asp-controller="Cart"
-                   asp-action="Index"
-                   class="btn btn-outline-primary me-2">
-                    🛒 My Cart
-                </a>
-            }
-
-            @if (User.IsInRole("Admin"))
-            {
-                <a asp-action="SearchExternalMenu"
-                   class="btn btn-outline-primary me-2">
-                    Import from OpenMenu
-                </a>
-
-                <a asp-action="Create"
-                   class="btn btn-primary">
-                    + Add Food
-                </a>
-            }
-        </div>
+<section class="menu-page-heading">
+    <div>
+        <p class="eyebrow">Freshly prepared for you</p>
+        <h1>Explore our menu</h1>
     </div>
-
-    <form asp-action="Index" method="get" class="row g-2 align-items-end mb-4 p-3 bg-white border">
-        <div class="col-lg-4">
-            <label for="search" class="form-label">Search dishes</label>
-            <input id="search" name="search" value="@Model.Search" class="form-control" placeholder="Try pizza, burger, healthy..." />
-        </div>
-        <div class="col-lg-2 col-md-4">
-            <label for="categoryId" class="form-label">Category</label>
-            <select id="categoryId" name="categoryId" class="form-select">
-                <option value="">All categories</option>
-                @foreach (var category in Model.Categories)
-                {
-                    <option value="@category.Id" selected="@(Model.CategoryId == category.Id)">@category.Name</option>
-                }
-            </select>
-        </div>
-        <div class="col-md-2">
-            <label for="minPrice" class="form-label">Min price</label>
-            <input id="minPrice" name="minPrice" value="@Model.MinPrice" type="number" min="0" step="1" class="form-control" placeholder="₹0" />
-        </div>
-        <div class="col-md-2">
-            <label for="maxPrice" class="form-label">Max price</label>
-            <input id="maxPrice" name="maxPrice" value="@Model.MaxPrice" type="number" min="0" step="1" class="form-control" placeholder="₹999" />
-        </div>
-        <div class="col-lg-2 col-md-4 d-flex gap-2">
-            <button type="submit" class="btn btn-dark flex-grow-1">Filter</button>
-            <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
-        </div>
-        <div class="col-12">
-            <div class="form-check">
-                <input asp-for="AvailableOnly" class="form-check-input" />
-                <label asp-for="AvailableOnly" class="form-check-label">Show available dishes only</label>
-            </div>
-        </div>
+    <form asp-action="Index" method="get" class="compact-search">
+        <input name="search" value="@Model.Search" placeholder="Search food" aria-label="Search food" />
+        <button type="submit" aria-label="Search">&#9906;</button>
     </form>
+</section>
 
-    <p class="text-muted mb-3">Showing @Model.Foods.Count dish@(Model.Foods.Count == 1 ? "" : "es")</p>
-
-    @if (TempData["Error"] != null)
+<div class="menu-admin-tools">
+    @if (User.IsInRole("Admin"))
     {
-        <div class="alert alert-danger">
-            @TempData["Error"]
-        </div>
+        <a asp-action="SearchExternalMenu" class="text-link">Import from OpenMenu</a>
+        <a asp-action="Create" class="text-link">+ Add food</a>
     }
-
-    @if (!Model.Foods.Any())
-    {
-        <div class="alert alert-info">
-            No food items found.
-        </div>
-    }
-    else
-    {
-        <table class="table table-bordered table-hover">
-
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Available</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                @foreach (var food in Model.Foods)
-                {
-                    <tr>
-
-                        <td>
-                            @food.Id
-                        </td>
-
-                        <td>
-                            <strong>
-                                @food.Name
-                            </strong>
-
-                            <br />
-
-                            <small class="text-muted">
-                                @food.Description
-                            </small>
-                        </td>
-
-                        <td>
-                            @(food.Category?.Name ?? "Uncategorized")
-                        </td>
-
-                        <td>
-                            ₹@food.Price
-                        </td>
-
-                        <td>
-                            @if (food.IsAvailable)
-                            {
-                                <span class="badge bg-success">
-                                    Available
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">
-                                    Unavailable
-                                </span>
-                            }
-                        </td>
-
-                        <td>
-
-                            @if (food.IsAvailable)
-                            {
-                                <form asp-controller="Cart"
-                                      asp-action="Add"
-                                      method="post"
-                                      class="d-inline">
-
-                                    <input type="hidden"
-                                           name="foodId"
-                                           value="@food.Id" />
-
-                                    <input type="hidden"
-                                           name="quantity"
-                                           value="1" />
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-primary">
-                                        🛒 Add
-                                    </button>
-
-                                </form>
-                            }
-
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <a asp-action="Edit"
-                                   asp-route-id="@food.Id"
-                                   class="btn btn-sm btn-warning">
-                                    Edit
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@food.Id"
-                                   class="btn btn-sm btn-danger">
-                                    Delete
-                                </a>
-                            }
-
-                        </td>
-
-                    </tr>
-                }
-
-            </tbody>
-
-        </table>
-    }
-
 </div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (!Model.Foods.Any())
+{
+    <div class="empty-menu">
+        <h2>No dishes found</h2>
+        <p>Try a different search.</p>
+        <a class="add-button" asp-action="Index">Show all dishes</a>
+    </div>
+}
+else
+{
+    <div class="reference-food-grid">
+        @foreach (var food in Model.Foods)
+        {
+            var category = food.Category?.Name ?? "Chef's special";
+            var image = string.IsNullOrWhiteSpace(food.ImageUrl) ? fallbackImage : food.ImageUrl;
+            <article class="reference-food-card">
+                <a asp-action="Details" asp-route-id="@food.Id" class="reference-image-link">
+                    <div class="reference-food-image" style="background-image:url('@image')">
+                        <span class="food-category">@category</span>
+                        <span class="favorite-button" aria-label="Save @food.Name">&#9825;</span>
+                    </div>
+                </a>
+                <div class="reference-food-content">
+                    <div class="reference-food-title-row">
+                        <h2><a asp-action="Details" asp-route-id="@food.Id">@food.Name</a></h2>
+                    </div>
+                    <p class="reference-food-description">@food.Description</p>
+                    <div class="reference-food-footer">
+                        <strong>₹@food.Price.ToString("0.00")</strong>
+                        @if (food.IsAvailable)
+                        {
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+                                <input type="hidden" name="foodId" value="@food.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button class="reference-add-button" type="submit"><span aria-hidden="true">&#128722;</span> Add</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="reference-unavailable">Unavailable</span>
+                        }
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+}
