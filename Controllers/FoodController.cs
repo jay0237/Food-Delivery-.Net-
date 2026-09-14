@@ -88,6 +88,20 @@ public class FoodController : Controller
         return View();
     }
 
+    // GET: /Food/Details/1
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var food = await _foodService.GetByIdAsync(id);
+
+        if (food == null)
+        {
+            return NotFound();
+        }
+
+        return View(food);
+    }
+
     // POST: /Food/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
