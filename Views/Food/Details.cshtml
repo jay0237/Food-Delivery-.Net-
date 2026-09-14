@@ -1,0 +1,41 @@
+@model FoodOrderingSystem.Models.Entities.Food
+
+@{
+    ViewData["Title"] = Model.Name;
+    var imageUrl = string.IsNullOrWhiteSpace(Model.ImageUrl)
+        ? "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=85"
+        : Model.ImageUrl;
+}
+
+<a class="back-link" asp-action="Index">&larr; Back to menu</a>
+<section class="food-detail">
+    <div class="food-detail-image" style="background-image:url('@imageUrl')"></div>
+    <div class="food-detail-copy">
+        <p class="eyebrow">@(Model.Category?.Name ?? "Chef's special")</p>
+        <h1>@Model.Name</h1>
+        <div class="detail-rating">&#9733; 4.8 <span>Popular choice</span></div>
+        <p class="detail-description">@Model.Description</p>
+        <div class="detail-order-row">
+            <strong class="detail-price">₹@Model.Price.ToString("0")</strong>
+            @if (Model.IsAvailable)
+            {
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-controller="Cart" asp-action="Add" method="post">
+                        <input type="hidden" name="foodId" value="@Model.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button class="add-button" type="submit">Add to cart</button>
+                    </form>
+                }
+                else
+                {
+                    <a class="add-button" asp-controller="Account" asp-action="Login">Sign in to order</a>
+                }
+            }
+            else
+            {
+                <span class="unavailable-label">Currently unavailable</span>
+            }
+        </div>
+    </div>
+</section>

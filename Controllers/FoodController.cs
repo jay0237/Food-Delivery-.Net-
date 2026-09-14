@@ -1,4 +1,5 @@
 using FoodOrderingSystem.Models.Entities;
+using FoodOrderingSystem.Models;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -23,11 +24,56 @@ public class FoodController : Controller
     }
 
     // GET: /Food
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(
+        string? search,
+        int? categoryId,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool availableOnly = true)
     {
-        var foods = await _foodService.GetAllAsync();
+        var allFoods = await _foodService.GetAllAsync();
+        var categories = (await _categoryService.GetAllAsync()).ToList();
+        var foods = allFoods.AsEnumerable();
 
-        return View(foods);
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var searchTerm = search.Trim();
+            foods = foods.Where(food =>
+                food.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                food.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (food.Category?.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+
+        if (categoryId.HasValue)
+        {
+            foods = foods.Where(food => food.CategoryId == categoryId.Value);
+        }
+
+        if (minPrice.HasValue)
+        {
+            foods = foods.Where(food => food.Price >= minPrice.Value);
+        }
+
+        if (maxPrice.HasValue)
+        {
+            foods = foods.Where(food => food.Price <= maxPrice.Value);
+        }
+
+        if (availableOnly)
+        {
+            foods = foods.Where(food => food.IsAvailable);
+        }
+
+        return View(new MenuViewModel
+        {
+            Foods = foods.OrderBy(food => food.Name).ToList(),
+            Categories = categories,
+            Search = search,
+            CategoryId = categoryId,
+            MinPrice = minPrice,
+            MaxPrice = maxPrice,
+            AvailableOnly = availableOnly
+        });
     }
 
     // GET: /Food/Create
@@ -40,6 +86,20 @@ public class FoodController : Controller
         ViewBag.Categories = categories;
 
         return View();
+    }
+
+    // GET: /Food/Details/1
+    [HttpGet]
+    public async Task<IActionResult> Details(int id)
+    {
+        var food = await _foodService.GetByIdAsync(id);
+
+        if (food == null)
+        {
+            return NotFound();
+        }
+
+        return View(food);
     }
 
     // POST: /Food/Create

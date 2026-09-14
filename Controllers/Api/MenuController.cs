@@ -31,6 +31,7 @@ public class MenuController : ControllerBase
                 Name = f.Name,
                 Description = f.Description,
                 Price = f.Price,
+                ImageUrl = f.ImageUrl,
                 CategoryId = f.CategoryId,
                 CategoryName = f.Category != null
                     ? f.Category.Name
@@ -65,6 +66,7 @@ public class MenuController : ControllerBase
             Name = food.Name,
             Description = food.Description,
             Price = food.Price,
+            ImageUrl = food.ImageUrl,
             CategoryId = food.CategoryId,
             CategoryName = food.Category?.Name,
             IsAvailable = food.IsAvailable
@@ -103,6 +105,7 @@ public class MenuController : ControllerBase
             Name = dto.Name,
             Description = dto.Description ?? string.Empty,
             Price = dto.Price,
+            ImageUrl = dto.ImageUrl,
             CategoryId = dto.CategoryId,
             IsAvailable = dto.IsAvailable,
             CreatedAt = DateTime.UtcNow
@@ -121,6 +124,7 @@ public class MenuController : ControllerBase
                 Name = food.Name,
                 Description = food.Description,
                 Price = food.Price,
+                ImageUrl = food.ImageUrl,
                 CategoryId = food.CategoryId,
                 IsAvailable = food.IsAvailable
             });
@@ -166,6 +170,7 @@ public class MenuController : ControllerBase
         food.Name = dto.Name;
         food.Description = dto.Description ?? string.Empty;
         food.Price = dto.Price;
+        food.ImageUrl = dto.ImageUrl;
         food.CategoryId = dto.CategoryId;
         food.IsAvailable = dto.IsAvailable;
 
