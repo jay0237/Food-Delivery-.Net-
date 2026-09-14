@@ -50,4 +50,45 @@ a { color: inherit; text-decoration: none; }
 footer { background: var(--ink); color: white; padding: 1.5rem 0; font: .75rem Arial, sans-serif; }
 footer .brand-mark { color: white; font-size: 1.4rem; margin-right: 1rem; }
 .form-control:focus { border-color: var(--coral); box-shadow: 0 0 0 .2rem rgba(255,101,73,.18); }
+.menu-intro { align-items: end; display: flex; justify-content: space-between; padding: 4.3rem 0 2.2rem; }
+.menu-intro h1 { font-size: clamp(3rem, 7vw, 5.8rem); letter-spacing: -.08em; line-height: .9; margin: 0; }
+.menu-subtitle { color: var(--muted); font-size: 1.05rem; margin: 1rem 0 0; max-width: 390px; }
+.menu-cart-link { border-bottom: 2px solid var(--ink); font: 700 .78rem Arial, sans-serif; padding-bottom: .45rem; text-transform: uppercase; }
+.menu-cart-link span { color: var(--coral); font-size: 1.2rem; margin-left: .45rem; }
+.menu-filters { align-items: center; background: white; border: 1px solid var(--line); display: flex; gap: .55rem; margin-bottom: 2rem; padding: .55rem; }
+.menu-filters input, .menu-filters select { background: var(--cream); border: 1px solid var(--line); color: var(--ink); font: .82rem Arial, sans-serif; min-height: 42px; padding: .7rem .75rem; }
+.menu-search { align-items: center; background: var(--cream); border: 1px solid var(--line); display: flex; flex: 1; min-width: 180px; }
+.menu-search span { font: 1.4rem Arial, sans-serif; padding: 0 .65rem; transform: rotate(-25deg); }
+.menu-search input { background: transparent; border: 0; flex: 1; min-width: 0; outline: 0; }
+.menu-filters select { min-width: 145px; }
+.menu-filters button { background: var(--ink); border: 0; color: white; cursor: pointer; font: 700 .76rem Arial, sans-serif; min-height: 42px; padding: .7rem 1rem; }
+.menu-filters > a { color: var(--muted); font: .75rem Arial, sans-serif; padding: .6rem; }
+.menu-results-heading { align-items: center; display: flex; justify-content: space-between; margin-bottom: 1rem; }
+.menu-results-heading p { color: var(--muted); font: .76rem Arial, sans-serif; margin: 0; }
+.menu-grid { grid-template-columns: repeat(3, 1fr); }
+.food-image-link { display: block; overflow: hidden; }
+.food-image-link .food-image { transition: transform .35s ease; }
+.food-image-link:hover .food-image { transform: scale(1.04); }
+.food-card { overflow: hidden; }
+.food-card h2 { font-size: 1.18rem; letter-spacing: -.03em; margin: 0; }
+.food-card h2 a:hover { color: var(--coral); }
+.food-description { color: var(--muted); display: -webkit-box; font: .78rem/1.45 Arial, sans-serif; margin: 0 .9rem .8rem; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-height: 2.25em; }
+.food-card .add-button, .add-button { display: block; margin: 0 .9rem; text-align: center; width: calc(100% - 1.8rem); }
+.unavailable-label { color: var(--muted); display: block; font: 700 .7rem Arial, sans-serif; margin: .9rem; text-transform: uppercase; }
+.empty-menu { background: white; border: 1px solid var(--line); padding: 4rem 2rem; text-align: center; }
+.empty-menu h2 { margin: 0 0 .5rem; }
+.empty-menu p { color: var(--muted); margin-bottom: 1.5rem; }
+.back-link { display: inline-block; font: 700 .75rem Arial, sans-serif; margin: 3rem 0 1.5rem; text-transform: uppercase; }
+.back-link:hover { color: var(--coral); }
+.food-detail { background: white; display: grid; grid-template-columns: 1fr 1fr; min-height: 510px; }
+.food-detail-image { background: #ddd center/cover; min-height: 420px; }
+.food-detail-copy { align-self: center; padding: 3.5rem; }
+.food-detail-copy h1 { font-size: clamp(2.7rem, 5vw, 5rem); letter-spacing: -.08em; line-height: .92; margin: 0 0 1.2rem; }
+.detail-rating { color: var(--coral); font: 700 .78rem Arial, sans-serif; }
+.detail-rating span { color: var(--muted); font-weight: 400; margin-left: .5rem; }
+.detail-description { color: var(--muted); font-size: 1.05rem; line-height: 1.6; margin: 2rem 0; max-width: 390px; }
+.detail-order-row { align-items: center; display: flex; gap: 2rem; }
+.detail-price { font: 700 1.5rem Arial, sans-serif; }
+.detail-order-row .add-button { margin: 0; width: auto; }
 @media (max-width: 767.98px) { .discovery-hero { display: block; } .hero-copy { padding: 3.5rem 1.5rem 2.5rem; } .hero-art { min-height: 260px; } .category-strip, .food-grid { grid-template-columns: 1fr 1fr; } .category-pill { align-items: start; flex-direction: column; } .section-block { padding-top: 2.8rem; } .section-heading h2 { font-size: 1.7rem; } .section-heading { align-items: start; flex-direction: column; gap: .8rem; } }
+@media (max-width: 767.98px) { .menu-intro { align-items: start; flex-direction: column; gap: 1.5rem; padding: 3rem 0 1.8rem; } .menu-filters { align-items: stretch; flex-wrap: wrap; } .menu-search { flex-basis: 100%; } .menu-filters select, .menu-filters input { flex: 1; min-width: 0; } .menu-grid { grid-template-columns: 1fr; } .food-detail { display: block; } .food-detail-image { min-height: 300px; } .food-detail-copy { padding: 2.2rem 1.5rem 2.8rem; } .detail-order-row { align-items: start; flex-direction: column; gap: 1rem; } }
