@@ -1,11 +1,10 @@
-name: Build ASP.NET Project
+name: .NET CI
 
 on:
   push:
     branches:
       - main
       - develop
-      - feature/**
 
   pull_request:
     branches:
@@ -14,10 +13,12 @@ on:
 
 jobs:
   build:
+    name: Build and Test
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup .NET
@@ -25,8 +26,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore Packages
+      - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build Project
-        run: dotnet build --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-restore
