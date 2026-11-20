@@ -100,12 +100,22 @@ public class MenuController : ControllerBase
             });
         }
 
+        if (string.IsNullOrWhiteSpace(dto.Name))
+        {
+            return BadRequest(new
+            {
+                message = "Name is required."
+            });
+        }
+
         var food = new Food
         {
-            Name = dto.Name,
-            Description = dto.Description ?? string.Empty,
+            Name = dto.Name.Trim(),
+            Description = dto.Description?.Trim() ?? string.Empty,
             Price = dto.Price,
-            ImageUrl = dto.ImageUrl,
+            ImageUrl = string.IsNullOrWhiteSpace(dto.ImageUrl)
+                ? null
+                : dto.ImageUrl.Trim(),
             CategoryId = dto.CategoryId,
             IsAvailable = dto.IsAvailable,
             CreatedAt = DateTime.UtcNow
@@ -126,6 +136,10 @@ public class MenuController : ControllerBase
                 Price = food.Price,
                 ImageUrl = food.ImageUrl,
                 CategoryId = food.CategoryId,
+                CategoryName = (await _context.Categories
+                    .Where(c => c.Id == food.CategoryId)
+                    .Select(c => c.Name)
+                    .FirstAsync()),
                 IsAvailable = food.IsAvailable
             });
     }
@@ -167,10 +181,20 @@ public class MenuController : ControllerBase
             });
         }
 
-        food.Name = dto.Name;
-        food.Description = dto.Description ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(dto.Name))
+        {
+            return BadRequest(new
+            {
+                message = "Name is required."
+            });
+        }
+
+        food.Name = dto.Name.Trim();
+        food.Description = dto.Description?.Trim() ?? string.Empty;
         food.Price = dto.Price;
-        food.ImageUrl = dto.ImageUrl;
+        food.ImageUrl = string.IsNullOrWhiteSpace(dto.ImageUrl)
+            ? null
+            : dto.ImageUrl.Trim();
         food.CategoryId = dto.CategoryId;
         food.IsAvailable = dto.IsAvailable;
 
