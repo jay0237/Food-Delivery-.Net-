@@ -6,17 +6,25 @@
 
 <section class="discovery-hero">
     <div class="hero-copy">
-        <p class="eyebrow">Your city, on a plate</p>
-        <h1>Good food is<br /><em>always</em> a good idea.</h1>
-        <p class="hero-lede">Discover local favourites, order in a few taps, and make any meal feel like a plan.</p>
-        <form class="search-box" asp-controller="Food" asp-action="Index" method="get">
+        <p class="eyebrow">Freshly made. Happily delivered.</p>
+        <h1>Your next<br />great meal<br /><em>starts here.</em></h1>
+        <p class="hero-lede">From juicy burgers to oven-fresh pizza, find something delicious for whatever you're craving.</p>
+        <form class="search-box" asp-controller="Food" asp-action="Explore" method="get">
             <span aria-hidden="true">&#9906;</span>
             <input type="search" name="search" placeholder="Search for a dish or craving" aria-label="Search menu" />
-            <button type="submit">Find food</button>
+            <button type="submit">Find your food</button>
         </form>
-        <div class="hero-meta"><span class="live-dot"></span> @Model.MenuCount+ dishes ready to order</div>
+        <div class="hero-bottom-row">
+            <a class="hero-menu-link" asp-controller="Food" asp-action="Explore">Explore the menu <span aria-hidden="true">&rarr;</span></a>
+            <p class="hero-meta"><span class="live-dot"></span>@Model.MenuCount dishes ready to order</p>
+        </div>
     </div>
-    <div class="hero-art" aria-label="A bowl of fresh food" role="img"></div>
+    <div class="hero-art" aria-label="Freshly prepared food served at a table" role="img">
+        <div class="hero-art-note" aria-hidden="true">
+            <span>Good food, good mood</span>
+            <strong>Made fresh<br />for your table.</strong>
+        </div>
+    </div>
 </section>
 
 <section class="section-block">
@@ -24,7 +32,7 @@
     <div class="category-strip">
         @foreach (var category in Model.Categories.Take(5))
         {
-            <a class="category-pill" asp-controller="Food" asp-action="Index">
+            <a class="category-pill" asp-controller="Food" asp-action="Explore" asp-route-categoryId="@category.Id">
                 <span class="category-thumb" style="background-image:url('@category.ImageUrl')"></span>
                 <span><strong>@category.Name</strong><small>Explore dishes</small></span>
             </a>
@@ -33,13 +41,17 @@
 </section>
 
 <section class="section-block featured-block">
-    <div class="section-heading"><div><p class="eyebrow">Fresh from the kitchen</p><h2>Popular near you</h2></div><a class="text-link" asp-controller="Food" asp-action="Index">View menu <span>&rarr;</span></a></div>
+    <div class="section-heading"><div><p class="eyebrow">Fresh from the kitchen</p><h2>Popular near you</h2></div><a class="text-link" asp-controller="Food" asp-action="Explore">View menu <span>&rarr;</span></a></div>
     <div class="food-grid">
         @foreach (var food in Model.FeaturedFoods)
         {
             <article class="food-card">
-                <div class="food-image" style="background-image:url('@food.ImageUrl')"><span class="rating">&#9733; 4.8</span></div>
-                <div class="food-info"><div><h3>@food.Name</h3><p>@(food.Category?.Name ?? "Chef's special")</p></div><strong class="price">₹@food.Price.ToString("0")</strong></div>
+                <a class="food-image-link" asp-controller="Food" asp-action="Details" asp-route-id="@food.Id" aria-label="View @food.Name details">
+                    <div class="food-image" style="background-image:url('@food.ImageUrl')"><span class="rating">&#9733; 4.8</span></div>
+                </a>
+                <div class="food-info"><div><h3><a asp-controller="Food" asp-action="Details" asp-route-id="@food.Id">@food.Name</a></h3><p>@(food.Category?.Name ?? "Chef's special")</p></div><strong class="price">₹@food.Price.ToString("0")</strong></div>
+                <p class="food-description">@food.Description</p>
+                <a class="text-link mx-3" asp-controller="Food" asp-action="Details" asp-route-id="@food.Id">View details <span>&rarr;</span></a>
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <form asp-controller="Cart" asp-action="Add" method="post"><input type="hidden" name="foodId" value="@food.Id" /><input type="hidden" name="quantity" value="1" /><button class="add-button" type="submit">+ Add</button></form>

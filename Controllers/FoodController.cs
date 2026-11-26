@@ -31,6 +31,28 @@ public class FoodController : Controller
         decimal? maxPrice,
         bool availableOnly = true)
     {
+        return await ShowMenuAsync(search, categoryId, minPrice, maxPrice, availableOnly);
+    }
+
+    // GET: /Food/Explore
+    [HttpGet]
+    public async Task<IActionResult> Explore(
+        string? search,
+        int? categoryId,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool availableOnly = true)
+    {
+        return await ShowMenuAsync(search, categoryId, minPrice, maxPrice, availableOnly);
+    }
+
+    private async Task<IActionResult> ShowMenuAsync(
+        string? search,
+        int? categoryId,
+        decimal? minPrice,
+        decimal? maxPrice,
+        bool availableOnly)
+    {
         var allFoods = await _foodService.GetAllAsync();
         var categories = (await _categoryService.GetAllAsync()).ToList();
         var foods = allFoods.AsEnumerable();
@@ -64,7 +86,7 @@ public class FoodController : Controller
             foods = foods.Where(food => food.IsAvailable);
         }
 
-        return View(new MenuViewModel
+        return View("Index", new MenuViewModel
         {
             Foods = foods.OrderBy(food => food.Name).ToList(),
             Categories = categories,
@@ -108,6 +130,39 @@ public class FoodController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(Food food)
     {
+        food.Name = food.Name?.Trim() ?? string.Empty;
+        food.Description = food.Description?.Trim() ?? string.Empty;
+        food.ImageUrl = string.IsNullOrWhiteSpace(food.ImageUrl)
+            ? null
+            : food.ImageUrl.Trim();
+
+        if (string.IsNullOrWhiteSpace(food.Name))
+        {
+            ModelState.AddModelError(nameof(food.Name), "A food name is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(food.Description))
+        {
+            ModelState.AddModelError(nameof(food.Description), "A food description is required.");
+        }
+
+        if (food.Price <= 0)
+        {
+            ModelState.AddModelError(nameof(food.Price), "Enter a price greater than zero.");
+        }
+
+        if (food.ImageUrl is not null &&
+            (!Uri.TryCreate(food.ImageUrl, UriKind.Absolute, out var imageUri) ||
+             (imageUri.Scheme != Uri.UriSchemeHttp && imageUri.Scheme != Uri.UriSchemeHttps)))
+        {
+            ModelState.AddModelError(nameof(food.ImageUrl), "Enter a valid image URL starting with http:// or https://.");
+        }
+
+        if (await _categoryService.GetByIdAsync(food.CategoryId) == null)
+        {
+            ModelState.AddModelError(nameof(food.CategoryId), "Select an existing category.");
+        }
+
         if (!ModelState.IsValid)
         {
             var categories = await _categoryService.GetAllAsync();
@@ -117,6 +172,7 @@ public class FoodController : Controller
             return View(food);
         }
 
+        food.CreatedAt = DateTime.UtcNow;
         await _foodService.AddAsync(food);
 
         return RedirectToAction(nameof(Index));

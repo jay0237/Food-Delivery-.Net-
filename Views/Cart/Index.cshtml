@@ -2,155 +2,128 @@
 
 @{
     ViewData["Title"] = "My Cart";
-
-    decimal total = Model.Items.Sum(
-        item => item.Food.Price * item.Quantity);
+    var total = Model.Items.Sum(item => item.Food.Price * item.Quantity);
+    var itemCount = Model.Items.Sum(item => item.Quantity);
 }
 
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>🛒 My Cart</h1>
-
-        <a asp-controller="Food"
-           asp-action="Index"
-           class="btn btn-outline-primary">
-            Continue Shopping
+<section class="cart-page">
+    <header class="cart-heading">
+        <div>
+            <p class="cart-eyebrow">Your order, your way</p>
+            <h1>Your cart<span>.</span></h1>
+            <p class="cart-heading-copy">Take a look at your picks before checking out.</p>
+        </div>
+        <a asp-controller="Food" asp-action="Explore" class="cart-continue-link">
+            <span aria-hidden="true">&larr;</span> Continue exploring
         </a>
-    </div>
+    </header>
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">
-            @TempData["Error"]
-        </div>
+        <div class="alert alert-danger" role="alert">@TempData["Error"]</div>
     }
 
     @if (!Model.Items.Any())
     {
-        <div class="alert alert-info">
-            Your cart is empty.
-        </div>
+        <section class="cart-empty-state">
+            <div class="cart-empty-icon" aria-hidden="true">&#128722;</div>
+            <p class="cart-eyebrow">Nothing here yet</p>
+            <h2>Your cart is waiting<br />for something delicious.</h2>
+            <p>Explore the menu and add a dish you love. It will show up here.</p>
+            <a asp-controller="Food" asp-action="Explore" class="cart-primary-button">Explore the menu</a>
+        </section>
     }
     else
     {
-        <div class="table-responsive">
+        <div class="cart-layout">
+            <section class="cart-items" aria-label="Items in your cart">
+                <div class="cart-items-heading">
+                    <h2>Your selections</h2>
+                    <span>@itemCount @(itemCount == 1 ? "item" : "items")</span>
+                </div>
 
-            <table class="table table-bordered align-middle">
+                @foreach (var item in Model.Items)
+                {
+                    var itemTotal = item.Food.Price * item.Quantity;
+                    var itemName = item.Food.Name.ToLowerInvariant();
+                    var categoryName = item.Food.Category?.Name.ToLowerInvariant() ?? string.Empty;
+                    var fallbackImage = itemName.Contains("burger") || categoryName.Contains("burger")
+                        ? "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80"
+                        : itemName.Contains("pizza") || categoryName.Contains("pizza")
+                            ? "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80"
+                            : itemName.Contains("fries") || categoryName.Contains("fries")
+                                ? "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=400&q=80"
+                                : itemName.Contains("drink") || itemName.Contains("shake") || categoryName.Contains("drink")
+                                    ? "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=400&q=80"
+                                    : itemName.Contains("bao") || categoryName.Contains("asian")
+                                        ? "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=400&q=80"
+                                        : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80";
+                    var image = string.IsNullOrWhiteSpace(item.Food.ImageUrl) ? fallbackImage : item.Food.ImageUrl;
 
-                <thead class="table-dark">
-                    <tr>
-                        <th>Food</th>
-                        <th>Price</th>
-                        <th style="width: 180px;">Quantity</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+                    <article class="cart-item">
+                        <img class="cart-item-image"
+                             src="@image"
+                             alt="@item.Food.Name"
+                             loading="lazy"
+                             onerror="this.onerror=null;this.src='@fallbackImage';" />
+                        <div class="cart-item-details">
+                            <p class="cart-item-category">@(item.Food.Category?.Name ?? "Chef's special")</p>
+                            <h3>@item.Food.Name</h3>
+                            @if (!string.IsNullOrWhiteSpace(item.Food.Description))
+                            {
+                                <p class="cart-item-description">@item.Food.Description</p>
+                            }
+                            <p class="cart-item-unit-price">₹@item.Food.Price.ToString("0.00") <span>each</span></p>
 
-                <tbody>
-
-                    @foreach (var item in Model.Items)
-                    {
-                        var itemTotal =
-                            item.Food.Price * item.Quantity;
-
-                        <tr>
-
-                            <td>
-                                <strong>
-                                    @item.Food.Name
-                                </strong>
-
-                                <br />
-
-                                <small class="text-muted">
-                                    @(item.Food.Category?.Name
-                                        ?? "Uncategorized")
-                                </small>
-                            </td>
-
-                            <td>
-                                ₹@item.Food.Price
-                            </td>
-
-                            <td>
-
-                                <form asp-action="Update"
-                                      method="post"
-                                      class="d-flex gap-2">
-
-                                    <input type="hidden"
-                                           name="foodId"
-                                           value="@item.FoodId" />
-
-                                    <input type="number"
+                            <div class="cart-item-actions">
+                                <form asp-action="Update" method="post" class="cart-quantity-form">
+                                    <input type="hidden" name="foodId" value="@item.FoodId" />
+                                    <label for="quantity-@item.FoodId">Qty</label>
+                                    <input id="quantity-@item.FoodId"
+                                           type="number"
                                            name="quantity"
                                            value="@item.Quantity"
                                            min="1"
-                                           class="form-control" />
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-success">
-                                        Update
-                                    </button>
-
+                                           aria-label="Quantity of @item.Food.Name"
+                                           class="cart-quantity-input" />
+                                    <button type="submit" class="cart-update-button">Update</button>
                                 </form>
 
-                            </td>
-
-                            <td>
-                                <strong>
-                                    ₹@itemTotal
-                                </strong>
-                            </td>
-
-                            <td>
-
-                                <form asp-action="Remove"
-                                      method="post">
-
-                                    <input type="hidden"
-                                           name="foodId"
-                                           value="@item.FoodId" />
-
-                                    <button type="submit"
-                                            class="btn btn-sm btn-danger">
-                                        Remove
-                                    </button>
-
+                                <form asp-action="Remove" method="post">
+                                    <input type="hidden" name="foodId" value="@item.FoodId" />
+                                    <button type="submit" class="cart-remove-button">Remove</button>
                                 </form>
+                            </div>
+                        </div>
+                        <strong class="cart-item-total">₹@itemTotal.ToString("0.00")</strong>
+                    </article>
+                }
 
-                            </td>
+                <a asp-controller="Food" asp-action="Explore" class="cart-add-more">
+                    <span aria-hidden="true">+</span> Add something else
+                </a>
+            </section>
 
-                        </tr>
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="card mt-4">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between">
-                    <h4>Cart Total</h4>
-
-                    <h4>₹@total</h4>
+            <aside class="cart-summary" aria-labelledby="cart-summary-title">
+                <p class="cart-eyebrow">Almost there</p>
+                <h2 id="cart-summary-title">Order summary</h2>
+                <div class="cart-summary-line">
+                    <span>Items in your order</span>
+                    <strong>@itemCount</strong>
                 </div>
-
-                <a asp-controller="Order"
-                                asp-action="Checkout"
-                                        class="btn btn-primary w-100 mt-3">
-                                                    Proceed to Checkout
-                                                            </a>
-
-            </div>
-
+                <div class="cart-summary-line cart-subtotal">
+                    <span>Subtotal</span>
+                    <strong>₹@total.ToString("0.00")</strong>
+                </div>
+                <p class="cart-summary-note">Your order total is based on the items in your cart.</p>
+                <a asp-controller="Order" asp-action="Checkout" class="cart-primary-button">
+                    Proceed to checkout <span aria-hidden="true">&rarr;</span>
+                </a>
+                <div class="cart-secure-note">
+                    <span aria-hidden="true">&#10003;</span>
+                    Review your order before confirming
+                </div>
+            </aside>
         </div>
     }
-
-</div>
+</section>

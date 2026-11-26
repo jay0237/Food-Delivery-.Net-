@@ -1,107 +1,174 @@
 @model FoodOrderingSystem.Models.Entities.Order
 
 @{
-    ViewData["Title"] = "Order Details";
+    ViewData["Title"] = $"Order #{Model.Id}";
+
+    var status = Model.Status?.Replace(" ", string.Empty).ToLowerInvariant() ?? "pending";
+    var isCancelled = status == "cancelled";
+    var currentStep = status switch
+    {
+        "confirmed" => 1,
+        "preparing" => 2,
+        "outfordelivery" => 3,
+        "delivered" => 4,
+        _ => 0
+    };
+    var displayStatus = status == "outfordelivery" ? "Out for delivery" : Model.Status;
+    var steps = new[] { "Order placed", "Confirmed", "Preparing", "On the way", "Delivered" };
+    var itemCount = Model.Items.Sum(item => item.Quantity);
 }
 
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Order #@Model.Id</h1>
-
-        <a asp-action="MyOrders"
-           class="btn btn-outline-primary">
-            My Orders
+<section class="order-detail-page">
+    <header class="order-detail-heading">
+        <div>
+            <p class="order-detail-eyebrow">Thanks for ordering with Smart Bite</p>
+            <h1>Order <span>#@Model.Id</span></h1>
+            <p>Placed @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</p>
+        </div>
+        <a asp-action="MyOrders" class="order-detail-back-link">
+            <span aria-hidden="true">&larr;</span> My orders
         </a>
-    </div>
+    </header>
 
-    <div class="card mb-4">
-        <div class="card-body">
+    <div class="order-detail-layout">
+        <div class="order-detail-main">
+            <section class="order-tracking-card" aria-labelledby="order-status-title">
+                <div class="order-status-heading">
+                    <div>
+                        <p class="order-detail-eyebrow">Order status</p>
+                        <h2 id="order-status-title">@displayStatus</h2>
+                    </div>
+                    <span class="order-status-pill order-status-@status">@displayStatus</span>
+                </div>
 
-            <p>
-                <strong>Status:</strong>
-
-                @if (Model.Status == "Delivered")
+                @if (isCancelled)
                 {
-                    <span class="badge bg-success">
-                        @Model.Status
-                    </span>
-                }
-                else if (Model.Status == "Cancelled")
-                {
-                    <span class="badge bg-danger">
-                        @Model.Status
-                    </span>
+                    <div class="order-cancelled-note">
+                        This order was cancelled. Visit My Orders to review your other orders.
+                    </div>
                 }
                 else
                 {
-                    <span class="badge bg-warning text-dark">
-                        @Model.Status
-                    </span>
+                    <div class="order-tracking-steps" aria-label="Order progress">
+                        @for (var index = 0; index < steps.Length; index++)
+                        {
+                            var stepClass = index < currentStep
+                                ? "is-complete"
+                                : index == currentStep
+                                    ? "is-current"
+                                    : string.Empty;
+
+                            <div class="order-tracking-step @stepClass">
+                                <span class="order-step-marker" aria-hidden="true">
+                                    @if (index < currentStep)
+                                    {
+                                        <text>&#10003;</text>
+                                    }
+                                    else
+                                    {
+                                        @((index + 1).ToString())
+                                    }
+                                </span>
+                                <span class="order-step-label">@steps[index]</span>
+                            </div>
+                            @if (index < steps.Length - 1)
+                            {
+                                <span class="order-step-connector @(index < currentStep ? "is-complete" : string.Empty)" aria-hidden="true"></span>
+                            }
+                        }
+                    </div>
+                    <p class="order-status-caption">
+                        @if (status == "delivered")
+                        {
+                            <span>Your meal has been delivered. Enjoy!</span>
+                        }
+                        else if (status == "outfordelivery")
+                        {
+                            <span>Your order is on its way.</span>
+                        }
+                        else if (status == "preparing")
+                        {
+                            <span>The kitchen is preparing your food fresh.</span>
+                        }
+                        else if (status == "confirmed")
+                        {
+                            <span>Your order is confirmed and the kitchen will get started soon.</span>
+                        }
+                        else
+                        {
+                            <span>Your order has been received and is waiting for confirmation.</span>
+                        }
+                    </p>
                 }
-            </p>
+            </section>
 
-            <p>
-                <strong>Order Date:</strong>
-                @Model.CreatedAt.ToLocalTime()
-            </p>
+            <section class="order-items-card" aria-labelledby="order-items-title">
+                <div class="order-items-heading">
+                    <div>
+                        <p class="order-detail-eyebrow">Made for you</p>
+                        <h2 id="order-items-title">In this order</h2>
+                    </div>
+                    <span class="order-items-count">@itemCount @(itemCount == 1 ? "item" : "items")</span>
+                </div>
 
+                @foreach (var item in Model.Items)
+                {
+                    var itemTotal = item.Price * item.Quantity;
+                    var itemName = item.Food.Name.ToLowerInvariant();
+                    var fallbackImage = itemName.Contains("burger")
+                        ? "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=300&q=80"
+                        : itemName.Contains("pizza")
+                            ? "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=300&q=80"
+                            : itemName.Contains("fries")
+                                ? "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=300&q=80"
+                                : itemName.Contains("drink") || itemName.Contains("shake")
+                                    ? "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=300&q=80"
+                                    : itemName.Contains("bao")
+                                        ? "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=300&q=80"
+                                        : "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=300&q=80";
+                    var image = string.IsNullOrWhiteSpace(item.Food.ImageUrl) ? fallbackImage : item.Food.ImageUrl;
+
+                    <article class="order-detail-item">
+                        <img src="@image"
+                             alt="@item.Food.Name"
+                             class="order-detail-item-image"
+                             loading="lazy"
+                             onerror="this.onerror=null;this.src='@fallbackImage';" />
+                        <div class="order-detail-item-info">
+                            <h3>@item.Food.Name</h3>
+                            @if (!string.IsNullOrWhiteSpace(item.Food.Description))
+                            {
+                                <p>@item.Food.Description</p>
+                            }
+                            <span>@item.Quantity × ₹@item.Price.ToString("0.00")</span>
+                        </div>
+                        <strong class="order-detail-item-total">₹@itemTotal.ToString("0.00")</strong>
+                    </article>
+                }
+            </section>
         </div>
+
+        <aside class="order-detail-summary" aria-labelledby="order-summary-title">
+            <p class="order-detail-eyebrow">Order overview</p>
+            <h2 id="order-summary-title">Summary</h2>
+            <div class="order-summary-line">
+                <span>Order number</span>
+                <strong>#@Model.Id</strong>
+            </div>
+            <div class="order-summary-line">
+                <span>Items</span>
+                <strong>@itemCount</strong>
+            </div>
+            <div class="order-summary-line">
+                <span>Status</span>
+                <strong>@displayStatus</strong>
+            </div>
+            <div class="order-summary-total">
+                <span>Grand total</span>
+                <strong>₹@Model.TotalAmount.ToString("0.00")</strong>
+            </div>
+            <a asp-action="MyOrders" class="order-detail-primary-button">View all orders</a>
+            <a asp-controller="Food" asp-action="Explore" class="order-detail-menu-link">Explore more food <span aria-hidden="true">&rarr;</span></a>
+        </aside>
     </div>
-
-    <table class="table table-bordered">
-
-        <thead class="table-dark">
-            <tr>
-                <th>Food</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-
-                    <td>
-                        @item.Food.Name
-                    </td>
-
-                    <td>
-                        ₹@item.Price
-                    </td>
-
-                    <td>
-                        @item.Quantity
-                    </td>
-
-                    <td>
-                        ₹@(item.Price * item.Quantity)
-                    </td>
-
-                </tr>
-            }
-
-        </tbody>
-
-        <tfoot>
-
-            <tr>
-                <th colspan="3"
-                    class="text-end">
-                    Grand Total
-                </th>
-
-                <th>
-                    ₹@Model.TotalAmount
-                </th>
-            </tr>
-
-        </tfoot>
-
-    </table>
-
-</div>
+</section>
