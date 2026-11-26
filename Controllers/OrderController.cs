@@ -9,10 +9,14 @@ namespace FoodOrderingSystem.Controllers;
 public class OrderController : Controller
 {
     private readonly IOrderService _orderService;
+    private readonly ICartService _cartService;
 
-    public OrderController(IOrderService orderService)
+    public OrderController(
+        IOrderService orderService,
+        ICartService cartService)
     {
         _orderService = orderService;
+        _cartService = cartService;
     }
 
     // GET: /Order/Checkout
@@ -26,9 +30,9 @@ public class OrderController : Controller
             return Challenge();
         }
 
-        var orders = await _orderService.GetMyOrdersAsync(userId.Value);
+        var cart = await _cartService.GetOrCreateCartAsync(userId.Value);
 
-        return View(orders);
+        return View(cart);
     }
 
     // POST: /Order/Create

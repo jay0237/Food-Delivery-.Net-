@@ -1,74 +1,69 @@
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Create Account";
 }
 
-<div class="container mt-5" style="max-width: 500px;">
+<section class="account-page" aria-labelledby="register-title">
+    <aside class="account-story">
+        <a class="account-brand" asp-controller="Home" asp-action="Index">
+            <span>Smart Bite</span>
+            <small>FOOD DELIVERY</small>
+        </a>
+        <div class="account-story-copy">
+            <p class="account-eyebrow">A seat at the table</p>
+            <h1>Your next<br />favourite meal<br /><em>starts here.</em></h1>
+            <p>Create an account to save time at checkout and keep your orders together.</p>
+        </div>
+        <p class="account-story-foot">Discover something delicious today.</p>
+    </aside>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
+    <div class="account-card">
+        <p class="account-eyebrow">Join Smart Bite</p>
+        <h2 id="register-title">Create your account</h2>
+        <p class="account-intro">A few details and you're ready to explore the menu.</p>
 
-            <h2 class="text-center mb-4">
-                Create Account
-            </h2>
+        <form asp-action="Register" method="post" class="account-form">
+            <div asp-validation-summary="All" class="account-validation" role="alert"></div>
 
-            <form asp-action="Register" method="post">
-
-                <div asp-validation-summary="All"
-                     class="text-danger mb-3">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        Full Name
-                    </label>
-
-                    <input type="text"
-                           name="fullName"
-                           class="form-control"
-                           placeholder="Enter your name"
-                           required />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        Email
-                    </label>
-
-                    <input type="email"
-                           name="email"
-                           class="form-control"
-                           placeholder="Enter your email"
-                           required />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        Password
-                    </label>
-
-                    <input type="password"
-                           name="password"
-                           class="form-control"
-                           placeholder="Enter password"
-                           required />
-                </div>
-
-                <button type="submit"
-                        class="btn btn-primary w-100">
-                    Register
-                </button>
-
-            </form>
-
-            <div class="text-center mt-3">
-                Already have an account?
-
-                <a asp-action="Login">
-                    Login
-                </a>
+            <div class="account-field">
+                <label for="fullName">Full name</label>
+                <input id="fullName"
+                       type="text"
+                       name="fullName"
+                       class="form-control"
+                       placeholder="Your name"
+                       autocomplete="name"
+                       required />
             </div>
 
-        </div>
-    </div>
+            <div class="account-field">
+                <label for="email">Email address</label>
+                <input id="email"
+                       type="email"
+                       name="email"
+                       class="form-control"
+                       placeholder="you@example.com"
+                       autocomplete="email"
+                       required />
+            </div>
 
-</div>
+            <div class="account-field">
+                <label for="password">Password</label>
+                <input id="password"
+                       type="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="Create a password"
+                       autocomplete="new-password"
+                       required />
+            </div>
+
+            <button type="submit" class="account-submit">Create account</button>
+        </form>
+
+        <p class="account-switch">
+            Already have an account?
+            <a asp-action="Login">Sign in</a>
+        </p>
+        <a class="account-home-link" asp-controller="Home" asp-action="Index">Back to home</a>
+    </div>
+</section>

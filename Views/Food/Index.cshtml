@@ -1,7 +1,7 @@
 @model FoodOrderingSystem.Models.MenuViewModel
 
 @{
-    ViewData["Title"] = "Menu";
+    ViewData["Title"] = "Explore menu";
     var fallbackImage = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85";
 }
 
@@ -10,13 +10,17 @@
         <p class="eyebrow">Freshly prepared for you</p>
         <h1>Explore our menu</h1>
     </div>
-    <form asp-action="Index" method="get" class="compact-search">
+    <form asp-action="Explore" method="get" class="compact-search">
+        <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+        <input type="hidden" name="minPrice" value="@Model.MinPrice" />
+        <input type="hidden" name="maxPrice" value="@Model.MaxPrice" />
+        <input type="hidden" name="availableOnly" value="@Model.AvailableOnly.ToString().ToLowerInvariant()" />
         <input name="search" value="@Model.Search" placeholder="Search food" aria-label="Search food" />
         <button type="submit" aria-label="Search">&#9906;</button>
     </form>
 </section>
 
-<form asp-action="Index" method="get" class="row g-2 align-items-end mb-4">
+<form asp-action="Explore" method="get" class="row g-2 align-items-end mb-4">
     <input type="hidden" name="search" value="@Model.Search" />
     <div class="col-md-3">
         <label for="categoryId" class="form-label">Category</label>
@@ -39,8 +43,8 @@
         <input id="maxPrice" name="maxPrice" value="@Model.MaxPrice" type="number" min="0" step="0.01" class="form-control" />
     </div>
     <div class="col-md-3 form-check ms-2">
-        <input type="hidden" name="availableOnly" value="false" />
         <input id="availableOnly" name="availableOnly" value="true" type="checkbox" class="form-check-input" checked="@Model.AvailableOnly" />
+        <input type="hidden" name="availableOnly" value="false" />
         <label for="availableOnly" class="form-check-label">Show available only</label>
     </div>
     <div class="col-md-1">
@@ -66,7 +70,7 @@
     <div class="empty-menu">
         <h2>No dishes found</h2>
         <p>Try a different search.</p>
-        <a class="add-button" asp-action="Index">Show all dishes</a>
+        <a class="add-button" asp-action="Explore">Show all dishes</a>
     </div>
 }
 else
@@ -88,6 +92,7 @@ else
                         <h2><a asp-action="Details" asp-route-id="@food.Id">@food.Name</a></h2>
                     </div>
                     <p class="reference-food-description">@food.Description</p>
+                    <a asp-action="Details" asp-route-id="@food.Id" class="text-link">View details <span>&rarr;</span></a>
                     <div class="reference-food-footer">
                         <strong>₹@food.Price.ToString("0.00")</strong>
                         @if (food.IsAvailable)

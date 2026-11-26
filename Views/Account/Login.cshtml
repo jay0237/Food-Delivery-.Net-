@@ -1,62 +1,58 @@
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Sign In";
 }
 
-<div class="container mt-5" style="max-width: 500px;">
+<section class="account-page" aria-labelledby="login-title">
+    <aside class="account-story">
+        <a class="account-brand" asp-controller="Home" asp-action="Index">
+            <span>Smart Bite</span>
+            <small>FOOD DELIVERY</small>
+        </a>
+        <div class="account-story-copy">
+            <p class="account-eyebrow">Good food is waiting</p>
+            <h1>Come back<br />for another<br /><em>great bite.</em></h1>
+            <p>Sign in to pick up where you left off and get your favourites on the way.</p>
+        </div>
+        <p class="account-story-foot">Freshly made. Happily delivered.</p>
+    </aside>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
+    <div class="account-card">
+        <p class="account-eyebrow">Welcome back</p>
+        <h2 id="login-title">Sign in</h2>
+        <p class="account-intro">Enter your details to continue to Smart Bite.</p>
 
-            <h2 class="text-center mb-4">
-                Login
-            </h2>
+        <form asp-action="Login" method="post" class="account-form">
+            <div asp-validation-summary="All" class="account-validation" role="alert"></div>
 
-            <form asp-action="Login" method="post">
-
-                <div asp-validation-summary="All"
-                     class="text-danger mb-3">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        Email
-                    </label>
-
-                    <input type="email"
-                           name="email"
-                           class="form-control"
-                           placeholder="Enter your email"
-                           required />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        Password
-                    </label>
-
-                    <input type="password"
-                           name="password"
-                           class="form-control"
-                           placeholder="Enter password"
-                           required />
-                </div>
-
-                <button type="submit"
-                        class="btn btn-primary w-100">
-                    Login
-                </button>
-
-            </form>
-
-            <div class="text-center mt-3">
-                Don't have an account?
-
-                <a asp-action="Register">
-                    Register
-                </a>
+            <div class="account-field">
+                <label for="email">Email address</label>
+                <input id="email"
+                       type="email"
+                       name="email"
+                       class="form-control"
+                       placeholder="you@example.com"
+                       autocomplete="email"
+                       required />
             </div>
 
-        </div>
-    </div>
+            <div class="account-field">
+                <label for="password">Password</label>
+                <input id="password"
+                       type="password"
+                       name="password"
+                       class="form-control"
+                       placeholder="Enter your password"
+                       autocomplete="current-password"
+                       required />
+            </div>
 
-</div>
+            <button type="submit" class="account-submit">Sign in to your account</button>
+        </form>
+
+        <p class="account-switch">
+            New to Smart Bite?
+            <a asp-action="Register">Create an account</a>
+        </p>
+        <a class="account-home-link" asp-controller="Home" asp-action="Index">Back to home</a>
+    </div>
+</section>

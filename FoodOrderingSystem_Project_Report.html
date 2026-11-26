@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Smart Bite - Mini Project Report</title>
+    <style>
+        @page { size: A4; margin: 18mm 17mm; }
+        * { box-sizing: border-box; }
+        body { color: #202820; font: 10.5pt/1.48 Arial, Helvetica, sans-serif; margin: 0; }
+        h1, h2, h3 { color: #17221d; }
+        h1 { font-size: 24pt; margin: 0 0 14pt; }
+        h2 { border-bottom: 2px solid #d7f34a; font-size: 17pt; margin: 0 0 14pt; padding-bottom: 6pt; }
+        h3 { font-size: 12pt; margin: 13pt 0 5pt; }
+        p { margin: 5pt 0 9pt; }
+        ul, ol { margin: 5pt 0 12pt; padding-left: 22pt; }
+        li { margin: 0 0 5pt; }
+        .cover { align-items: center; display: flex; flex-direction: column; height: 258mm; justify-content: center; text-align: center; }
+        .cover-brand { color: #17221d; font: bold 18pt Georgia, serif; letter-spacing: 1.5pt; text-transform: uppercase; }
+        .cover-rule { background: #d7f34a; height: 5px; margin: 20pt auto; width: 90pt; }
+        .cover-title { font: bold 27pt/1.2 Georgia, serif; margin: 0 auto 18pt; max-width: 470pt; }
+        .cover-course { font-size: 12pt; font-weight: bold; letter-spacing: .5pt; }
+        .submitted { margin-top: 20pt; }
+        .candidate { line-height: 1.7; margin-top: 12pt; }
+        .university { font-weight: bold; line-height: 1.55; margin-top: 28pt; }
+        .page { break-before: page; page-break-before: always; }
+        .chapter { color: #606b63; font-size: 9pt; font-weight: bold; letter-spacing: 1.2pt; margin: 0 0 5pt; text-transform: uppercase; }
+        .section-label { color: #68736d; font-size: 9pt; font-weight: bold; }
+        .callout { background: #f4f6ed; border-left: 4px solid #bddb4d; margin: 10pt 0; padding: 9pt 12pt; }
+        table { border-collapse: collapse; margin: 9pt 0 14pt; width: 100%; }
+        th, td { border: 1px solid #cfd5cc; padding: 7pt 8pt; text-align: left; vertical-align: top; }
+        th { background: #eef2e5; }
+        caption { font-size: 9pt; font-weight: bold; margin: 0 0 5pt; }
+        .screen-grid { table-layout: fixed; }
+        .screen-grid td { border: 0; padding: 8pt; text-align: center; width: 50%; }
+        .screen-grid img { border: 1px solid #d6d9d3; max-height: 4.15in; max-width: 100%; object-fit: contain; }
+        .figure-caption { color: #333; font-size: 9pt; font-weight: bold; margin: 5pt 0 2pt; text-align: center; }
+        .figure-note { color: #59635c; font-size: 8.5pt; margin: 0 auto; max-width: 250pt; text-align: center; }
+        pre { background: #f4f5f2; border: 1px solid #d8ddd5; color: #202820; font: 8pt/1.32 Consolas, "Courier New", monospace; margin: 5pt 0 12pt; padding: 9pt; white-space: pre-wrap; }
+        .listing-title { font-size: 9pt; font-weight: bold; margin: 12pt 0 4pt; }
+        .small { color: #59635c; font-size: 9pt; }
+        .end-note { border-top: 1px solid #d8ddd5; color: #68736d; font-size: 8.5pt; margin-top: 18pt; padding-top: 8pt; }
+    </style>
+</head>
+<body>
+    <section class="cover">
+        <div class="cover-brand">Smart Bite</div>
+        <div class="cover-rule"></div>
+        <p class="cover-title">FOOD ORDERING AND DELIVERY SYSTEM</p>
+        <p class="cover-course">MINI PROJECT REPORT<br>.NET TECHNOLOGIES (01CE1523)</p>
+        <p class="submitted">Submitted by</p>
+        <div class="candidate">
+            [NAME OF THE CANDIDATE-1]<br>[MU ENROLMENT NUMBER]<br>
+            [NAME OF THE CANDIDATE-2]<br>[MU ENROLMENT NUMBER]<br>
+            [NAME OF THE CANDIDATE-3]<br>[MU ENROLMENT NUMBER]
+        </div>
+        <p class="university">BACHELOR OF TECHNOLOGY<br>in<br>Computer Engineering<br>
+        Faculty of Engineering &amp; Technology<br>Marwadi University, Rajkot</p>
+        <p>November, 2026</p>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 1</p>
+        <h2>Project Objective</h2>
+        <h3>1.1 Aim of the Project</h3>
+        <p>To design and develop Smart Bite, a web-based food ordering system using C# and ASP.NET Core MVC (.NET 10). The application gives customers a convenient way to explore food, review item details, and place orders through a cart. It also provides administrators with tools to manage the menu and update order statuses, with data stored in SQLite through Entity Framework Core.</p>
+
+        <h3>1.2 Objectives</h3>
+        <ol>
+            <li>Build a responsive menu and food-detail experience using Razor Views, HTML, CSS, and Bootstrap.</li>
+            <li>Provide menu search and filters for category, price range, and availability.</li>
+            <li>Allow administrators to create, view, update, and delete food and category records.</li>
+            <li>Support customer registration and login with cookie authentication and role-based authorization.</li>
+            <li>Enable signed-in customers to manage a cart, confirm an order, and view order history and status.</li>
+            <li>Integrate external menu search/import through the OpenMenu API and test account services with xUnit.</li>
+        </ol>
+
+        <h3>1.3 Scope of the Project</h3>
+        <p>The system is intended for customers ordering food and administrators maintaining a restaurant-style catalogue. Customers can browse dishes, read descriptions, search and filter the catalogue, manage cart quantities, place orders, and review their orders. Administrators can manage food and categories, import external menu results, and update order status.</p>
+        <p>The current project does not process payments, assign delivery drivers, provide live delivery tracking, or send customer notifications. Food images are supplied as URLs; image-file uploads are not part of this implementation. OpenMenu features require an API key in application configuration.</p>
+        <div class="callout"><strong>Primary users:</strong> customers and administrators. <strong>Currency shown:</strong> Indian rupees (₹).</div>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 2</p>
+        <h2>Introduction</h2>
+        <h3>2.1 Tools and Technologies Used</h3>
+        <table>
+            <caption>Table 2.1: Tools and Technologies Used</caption>
+            <thead><tr><th>Component</th><th>Technology Used</th></tr></thead>
+            <tbody>
+                <tr><td>Front End</td><td>HTML, Razor Views, CSS, Bootstrap, JavaScript/jQuery</td></tr>
+                <tr><td>Back End / Language</td><td>C#, ASP.NET Core MVC, .NET 10</td></tr>
+                <tr><td>Application Architecture</td><td>MVC controllers with service and repository layers</td></tr>
+                <tr><td>Data Access</td><td>Entity Framework Core 10, migrations, repository pattern</td></tr>
+                <tr><td>Database</td><td>SQLite</td></tr>
+                <tr><td>Authentication</td><td>ASP.NET Core cookie authentication, role claims, BCrypt password hashing</td></tr>
+                <tr><td>External Integration</td><td>HttpClient and OpenMenu API</td></tr>
+                <tr><td>Testing</td><td>xUnit and Entity Framework Core InMemory provider</td></tr>
+                <tr><td>Development Tools</td><td>Visual Studio Code and .NET CLI</td></tr>
+            </tbody>
+        </table>
+
+        <h3>2.2 Modules of the Project</h3>
+        <table>
+            <thead><tr><th>Module</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td>Account</td><td>Customer registration, login, logout, and cookie-based identity.</td></tr>
+                <tr><td>Explore Menu</td><td>Browse food items, view descriptions, search, and filter by category, price, or availability.</td></tr>
+                <tr><td>Food and Category Administration</td><td>Admin-only create, edit, list, and delete operations for catalogue data.</td></tr>
+                <tr><td>Cart</td><td>Add food, change quantities, remove items, and calculate the cart total.</td></tr>
+                <tr><td>Orders</td><td>Confirm checkout, view customer order history, and inspect order details.</td></tr>
+                <tr><td>Admin Order Dashboard</td><td>Review orders and update their status through the order lifecycle.</td></tr>
+                <tr><td>OpenMenu Import</td><td>Search external menu entries and import a selected item into the local catalogue.</td></tr>
+            </tbody>
+        </table>
+        <div class="callout"><strong>Request flow:</strong> Razor View → MVC Controller → Service → Repository → Entity Framework Core → SQLite.</div>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 3</p>
+        <h2>Application Screenshots</h2>
+        <p class="small">Representative screens captured from the local development application.</p>
+        <table class="screen-grid">
+            <tr>
+                <td>
+                    <img src="ReportAssets/home.jpg" alt="Smart Bite home page">
+                    <p class="figure-caption">Figure 3.1: Home / Discover Page</p>
+                    <p class="figure-note">Introduces the service, provides menu search, and links to the Explore menu.</p>
+                </td>
+                <td>
+                    <img src="ReportAssets/menu.jpg" alt="Explore menu page">
+                    <p class="figure-caption">Figure 3.2: Explore Menu</p>
+                    <p class="figure-note">Lists dishes with category, price, description, availability, and filtering controls.</p>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 3</p>
+        <h2>Application Screenshots (Continued)</h2>
+        <table class="screen-grid">
+            <tr>
+                <td>
+                    <img src="ReportAssets/details.jpg" alt="Food item details page">
+                    <p class="figure-caption">Figure 3.3: Food Item Details</p>
+                    <p class="figure-note">Shows an individual food item, its description, price, and order action.</p>
+                </td>
+                <td>
+                    <img src="ReportAssets/login.jpg" alt="Customer login page">
+                    <p class="figure-caption">Figure 3.4: Login Page</p>
+                    <p class="figure-note">Provides the sign-in form used before protected customer actions.</p>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 3</p>
+        <h2>Administration Screenshots</h2>
+        <table class="screen-grid">
+            <tr>
+                <td>
+                    <img src="ReportAssets/create-food.jpg" alt="Admin add-food form">
+                    <p class="figure-caption">Figure 3.5: Add Food Form</p>
+                    <p class="figure-note">Allows an administrator to enter a name, description, price, category, image URL, and availability.</p>
+                </td>
+                <td>
+                    <img src="ReportAssets/admin.jpg" alt="Admin order dashboard">
+                    <p class="figure-caption">Figure 3.6: Admin Order Dashboard</p>
+                    <p class="figure-note">Provides links to catalogue management and displays the current order queue.</p>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 4</p>
+        <h2>Important Code</h2>
+        <p class="small">Selected excerpts only; full implementation remains in the project source tree.</p>
+
+        <p class="listing-title">Listing 4.1: Models/Entities/Food.cs</p>
+        <pre>namespace FoodOrderingSystem.Models.Entities;
+
+public class Food
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public decimal Price { get; set; }
+    public string? ImageUrl { get; set; }
+    public bool IsAvailable { get; set; } = true;
+    public DateTime CreatedAt { get; set; }
+    public int CategoryId { get; set; }
+    public Category? Category { get; set; }
+}</pre>
+
+        <p class="listing-title">Listing 4.2: Program.cs — Database and Food Service Registration</p>
+        <pre>builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt;
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped&lt;IFoodRepository, FoodRepository&gt;();
+builder.Services.AddScoped&lt;IFoodService, FoodService&gt;();
+
+// At startup, apply migrations and seed the catalogue.
+context.Database.Migrate();</pre>
+    </section>
+
+    <section class="page">
+        <p class="chapter">Chapter 4</p>
+        <h2>Important Code (Continued)</h2>
+        <p class="listing-title">Listing 4.3: FoodController.cs — Menu Filter Logic</p>
+        <pre>if (!string.IsNullOrWhiteSpace(search))
+{
+    var searchTerm = search.Trim();
+    foods = foods.Where(food =&gt;
+        food.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        food.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        (food.Category?.Name.Contains(
+            searchTerm, StringComparison.OrdinalIgnoreCase) ?? false));
+}
+
+if (categoryId.HasValue)
+    foods = foods.Where(food =&gt; food.CategoryId == categoryId.Value);
+if (minPrice.HasValue)
+    foods = foods.Where(food =&gt; food.Price &gt;= minPrice.Value);
+if (maxPrice.HasValue)
+    foods = foods.Where(food =&gt; food.Price &lt;= maxPrice.Value);
+if (availableOnly)
+    foods = foods.Where(food =&gt; food.IsAvailable);</pre>
+
+        <p class="listing-title">Listing 4.4: Data/AppDbContext.cs — Cart and Order Relationships</p>
+        <pre>modelBuilder.Entity&lt;CartItem&gt;()
+            .HasOne(ci =&gt; ci.Food)
+    .WithMany()
+            .HasForeignKey(ci =&gt; ci.FoodId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+modelBuilder.Entity&lt;CartItem&gt;()
+            .HasIndex(ci =&gt; new { ci.CartId, ci.FoodId })
+    .IsUnique();
+
+modelBuilder.Entity&lt;OrderItem&gt;()
+            .HasOne(oi =&gt; oi.Order)
+            .WithMany(o =&gt; o.Items)
+            .HasForeignKey(oi =&gt; oi.OrderId)
+    .OnDelete(DeleteBehavior.Cascade);</pre>
+
+        <h3>Testing Summary</h3>
+        <p>The existing xUnit suite covers successful registration, duplicate-email rejection, and login with a valid password. The most recent test run completed with <strong>3 passed, 0 failed</strong>. The tests use EF Core's InMemory provider.</p>
+        <h3>Conclusion and Future Work</h3>
+        <p>Smart Bite demonstrates a layered ASP.NET Core MVC food-ordering application with persistent catalogue, cart, and order data. Possible future enhancements include payment processing, delivery assignment and tracking, stronger production secret management, and additional automated tests for cart, checkout, and menu filtering.</p>
+        <p class="end-note">Before submission, replace the candidate-name and enrolment-number placeholders on the cover page with the team details.</p>
+    </section>
+</body>
+</html>
