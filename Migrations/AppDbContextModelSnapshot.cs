@@ -131,6 +131,31 @@ namespace FoodOrderingSystem.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DeliveryAddress")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeliveryCity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeliveryInstructions")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeliveryPhone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeliveryState")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeliveryZipCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("TEXT");

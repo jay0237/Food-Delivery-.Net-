@@ -14,6 +14,22 @@ public class Order
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public string DeliveryAddress { get; set; } = string.Empty;
+
+    public string? DeliveryCity { get; set; }
+
+    public string? DeliveryState { get; set; }
+
+    public string? DeliveryZipCode { get; set; }
+
+    public string? DeliveryPhone { get; set; }
+
+    public string? DeliveryInstructions { get; set; }
+
+    public double? Latitude { get; set; }
+
+    public double? Longitude { get; set; }
+
     public ICollection<OrderItem> Items { get; set; }
         = new List<OrderItem>();
 }
