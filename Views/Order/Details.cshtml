@@ -163,6 +163,38 @@
                 <span>Status</span>
                 <strong>@displayStatus</strong>
             </div>
+            <div class="order-summary-line">
+                <span>Delivery address</span>
+                <strong>
+                    @if (string.IsNullOrWhiteSpace(Model.DeliveryAddress))
+                    {
+                        <text>Not recorded</text>
+                    }
+                    else
+                    {
+                        @Model.DeliveryAddress
+                        @if (!string.IsNullOrWhiteSpace(Model.DeliveryCity))
+                        {
+                            <text>, @Model.DeliveryCity</text>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.DeliveryState))
+                        {
+                            <text>, @Model.DeliveryState</text>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.DeliveryZipCode))
+                        {
+                            <text> @Model.DeliveryZipCode</text>
+                        }
+                    }
+                </strong>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.DeliveryPhone))
+            {
+                <div class="order-summary-line">
+                    <span>Contact phone</span>
+                    <strong>@Model.DeliveryPhone</strong>
+                </div>
+            }
             <div class="order-summary-total">
                 <span>Grand total</span>
                 <strong>₹@Model.TotalAmount.ToString("0.00")</strong>

@@ -22,7 +22,16 @@ public class OrderService : IOrderService
         _context = context;
     }
 
-    public async Task<Order?> CreateOrderAsync(int userId)
+    public async Task<Order?> CreateOrderAsync(
+        int userId,
+        string deliveryAddress,
+        string? deliveryCity,
+        string? deliveryState,
+        string? deliveryZipCode,
+        string deliveryPhone,
+        string? deliveryInstructions,
+        double? latitude,
+        double? longitude)
     {
         var cart = await _cartRepository
             .GetCartByUserIdAsync(userId);
@@ -36,7 +45,15 @@ public class OrderService : IOrderService
         {
             UserId = userId,
             Status = "Pending",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            DeliveryAddress = deliveryAddress,
+            DeliveryCity = deliveryCity,
+            DeliveryState = deliveryState,
+            DeliveryZipCode = deliveryZipCode,
+            DeliveryPhone = deliveryPhone,
+            DeliveryInstructions = deliveryInstructions,
+            Latitude = latitude,
+            Longitude = longitude
         };
 
         decimal total = 0;

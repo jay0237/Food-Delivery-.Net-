@@ -33,7 +33,27 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Cart" asp-action="Index">Cart</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Order" asp-action="MyOrders">Order Status</a></li>
                         <li class="nav-item"><a class="nav-link" href="mailto:hello@smartbite.in">Contact <span aria-hidden="true">&#9742;</span></a></li>
-                        <li class="nav-item"><a class="sign-in-button" asp-controller="Account" asp-action="Login">Sign In</a></li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span aria-hidden="true">👤</span> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Order" asp-action="MyOrders">My Orders</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
+                                            <button type="submit" class="dropdown-item">Sign Out</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="sign-in-button" asp-controller="Account" asp-action="Login">Sign In</a></li>
+                        }
                     </ul>
                 </div>
             </div>

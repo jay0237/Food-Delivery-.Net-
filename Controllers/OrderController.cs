@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using FoodOrderingSystem.Models;
 using FoodOrderingSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,10 +36,18 @@ public class OrderController : Controller
         return View(cart);
     }
 
-    // POST: /Order/Create
+    // GET: /Order/Address - New step to collect address
+    [HttpGet]
+    public IActionResult Address()
+    {
+        var model = new OrderAddressViewModel();
+        return View(model);
+    }
+
+    // POST: /Order/Create - Updated to accept address
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(OrderAddressViewModel addressModel)
     {
         var userId = GetUserId();
 
@@ -47,7 +56,21 @@ public class OrderController : Controller
             return Challenge();
         }
 
-        var order = await _orderService.CreateOrderAsync(userId.Value);
+        if (!ModelState.IsValid)
+        {
+            return View("Address", addressModel);
+        }
+
+        var order = await _orderService.CreateOrderAsync(
+            userId.Value,
+            addressModel.DeliveryAddress,
+            addressModel.DeliveryCity,
+            addressModel.DeliveryState,
+            addressModel.DeliveryZipCode,
+            addressModel.DeliveryPhone,
+            addressModel.DeliveryInstructions,
+            addressModel.Latitude,
+            addressModel.Longitude);
 
         if (order == null)
         {
@@ -57,6 +80,7 @@ public class OrderController : Controller
             return RedirectToAction("Index", "Cart");
         }
 
+        TempData["Success"] = "Order placed successfully!";
         return RedirectToAction(nameof(Details), new { id = order.Id });
     }
 
